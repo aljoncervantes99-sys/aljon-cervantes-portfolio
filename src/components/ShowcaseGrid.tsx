@@ -13,35 +13,53 @@ export default function ShowcaseGrid() {
     <section className="pgrid ktools" aria-labelledby="showcase-title">
       <header className="pgrid__head ktools__head">
         <div className="ktools__head-copy">
-          <span className="pgrid__eyebrow">Showcase</span>
+          <span className="pgrid__eyebrow">Ecommerce Expertise</span>
           <h1 className="pgrid__title" id="showcase-title">
-            Your flagship product, and the people using it.
+            Helping Ecommerce Brands Run Smarter Operations.
           </h1>
           <p className="pgrid__lede">
-            PLACEHOLDER - tell me what to put here: one line on what this product is and why a visitor should look at it.
+            Reliable ecommerce support for Shopify store management, product listings, inventory
+            monitoring, order processing, and customer experience.
           </p>
         </div>
 
-        {/* Badge slot. Fixed 320x72 box so it sits on the baseline of the
-            lede. Swap the image and text for a real badge, award or launch
-            listing, and point the link at it. */}
-        <div className="ktools__vote">
-          <p className="ktools__vote-label">
-            Featured on
-            <span aria-hidden="true" className="ktools__vote-dot" />
-            <span className="ktools__vote-ask">Placeholder</span>
-          </p>
-          <a className="ktools__vote-frame ktools__vote-card" href="#">
-            <img src="/placeholders/badge.svg" alt="" width="48" height="48" />
-            <span className="ktools__vote-text">
-              PLACEHOLDER - a badge, award or launch link
+        <div className="ktools__platforms" aria-labelledby="core-platforms-label">
+          <span className="ktools__platforms-label" id="core-platforms-label">My Core Platforms</span>
+          <div className="ktools__platform-list">
+            <span className="ktools__platform">
+              <span className="ktools__platform-mark"><img src="/icons/shopify.svg" alt="" /></span>
+              Shopify
             </span>
-          </a>
+            <span className="ktools__platform">
+              <span className="ktools__platform-mark"><img src="/icons/salesforce.svg" alt="" /></span>
+              Salesforce
+            </span>
+            <span className="ktools__platform">
+              <span className="ktools__platform-mark ktools__platform-mark--excel" aria-hidden="true">X</span>
+              Microsoft Excel
+            </span>
+            <span className="ktools__platform">
+              <span className="ktools__platform-mark ktools__platform-mark--sheets" aria-hidden="true"><i /><i /><i /><i /></span>
+              Google Sheets
+            </span>
+          </div>
         </div>
       </header>
 
       <div className="home__glass ktools__glass">
-        <Flagship eyebrow="Flagship build" />
+        <Flagship
+          eyebrow="Ecommerce Operations"
+          title="Ecommerce Operations & Shopify Store Management"
+          description="I provide reliable ecommerce operational support to help businesses manage their online stores efficiently. From Shopify product management and inventory updates to order processing and customer service, I help maintain organized workflows and smooth day-to-day operations."
+          buttonLabel="View Ecommerce Project"
+          buttonHref="/projects/ecommerce-operations.html"
+          screenshot={{
+            src: '/projects/ecommerce/ecommerce-showcase.png',
+            alt: 'Shopify product listing and catalog management screen',
+            host: 'Shopify Admin',
+            path: '/products',
+          }}
+        />
       </div>
     </section>
   )

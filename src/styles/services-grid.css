@@ -1,7 +1,7 @@
 /* ============================================
    SERVICES - one glass sheet
    Head, then the glass with three bands: the three-step method on a dark plate,
-   the five service cards with their marks, and the booking workflow scaled
+   the four service cards with their marks, and the booking workflow scaled
    below. The page scrolls: every card shows all of its bullets.
    ============================================ */
 /* The workflow section carries data-reveal for the scrolling views; nothing
@@ -46,7 +46,7 @@
   box-shadow:
     inset 0 0 0 1px var(--line),
     inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 30px 60px -40px rgba(6, 12, 26, 0.35);
+    var(--shadow-soft);
   overflow: hidden;
 }
 [data-theme='dark'] .sgrid__method {
@@ -64,7 +64,7 @@
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 30px 60px -40px rgba(6, 12, 26, 0.9);
+    var(--shadow-soft);
 }
 .sgrid__method-copy {
   display: flex;
@@ -230,12 +230,12 @@
 }
 @media (min-width: 1100px) {
   .sgrid__services {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     grid-template-rows: none;
   }
 }
 .sgrid__service { list-style: none; }
-/* Every row lines up across the five cards: the description and each bullet
+/* Every row lines up across the service cards: the description and each bullet
    reserve two lines whether they need them or not. */
 .sgrid__service .bento__desc { min-height: calc(2 * 1.4em); }
 .sgrid__service-top {

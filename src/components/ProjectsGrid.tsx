@@ -1,16 +1,17 @@
 import { Fragment, useCallback, useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { ArrowUpRight, X, Ticket, Robot, FlowArrow, CursorClick } from '@/components/slab'
-import { FlowIcon, PlanIcon, GlobeIcon, SparkIcon, DeviceIcon } from './ProjectIcons'
-import { AutomationsPanel, PlanPanel, TicketingPanel, FrameworkPanel, WorkflowPanel, BarrelPanel, AIWindow, AppsWindow } from './ProjectPanels'
+import { Link } from 'react-router-dom'
+import { ArrowUpRight, X, CursorClick } from '@/components/slab'
+import { FlowIcon, PlanIcon, GlobeIcon, LogisticsIcon } from './ProjectIcons'
+import { BarrelPanel } from './ProjectPanels'
 import { gymFunnel, bookingFunnel, websiteFunnel, type Funnel } from '@/data/funnels'
-import { mobileApps } from '@/data/projects'
-import { aiStack, type StackNode } from '@/data/ai-stack'
+import { graphicDesigns } from '@/data/graphics-design'
+import { logisticsProject } from '@/data/logistics-project'
 import { useIsPhone } from '@/hooks/useMediaQuery'
 
 /**
- * Projects, as one viewport in Home's bento language: a glass panel of six
- * cards, each previewing its own body of work with a live inner track, each
+ * Projects, as one viewport in Home's bento language: a glass panel of cards,
+ * each previewing its own body of work with a live inner track, each
  * opening the work itself in a near-fullscreen dialog (see ProjectPanels for
  * the first three; the rest are the sections the long page used to stack).
  *
@@ -24,7 +25,7 @@ type Project = {
   desc: string
   Icon: ComponentType<{ size?: number }>
   eyebrow: string
-  Section: ComponentType
+  Section?: ComponentType
   span?: 2
   /** Open Builds style: a small orange kicker above the title. */
   kicker?: string
@@ -33,6 +34,12 @@ type Project = {
   Preview: ComponentType
   /** Phone filter bucket. */
   cat: Cat
+  /** Dedicated public case study for the featured projects. */
+  caseStudy?: string
+  /** Use client-side navigation for a portfolio route rather than a static case-study file. */
+  appRoute?: boolean
+  /** Project disciplines shown above the description. */
+  category?: string
 }
 
 type Cat = 'work' | 'sites' | 'apps' | 'ai'
@@ -46,47 +53,21 @@ const FILTERS: { key: Cat | 'all'; label: string }[] = [
 
 /** Example tool marks, from public/icons. Swap for what you build with. */
 const GHL = '/icons/gohighlevel.png'
-const CLAUDE_CODE = '/icons/claude-code-logo.png'
-const CODEX = '/icons/ai/codex.svg'
-const HERMES = '/icons/ai/hermes.svg'
-const PLAY = '/icons/ai/googleplay.svg'
-const CHROME = '/icons/ai/googlechrome.svg'
-const EXPO = '/icons/ai/expo.svg'
+const WF_SHOTS = ['/projects/pearl-white.png']
 
-const WF_SHOTS = ['project-1.jpg', 'project-2.jpg', 'project-3.jpg', 'project-4.jpg'].map(
-  (f) => `/placeholders/${f}`,
-)
-
-const FUNNEL_SHOTS = [gymFunnel[0], bookingFunnel[0], websiteFunnel[0]].filter(Boolean)
 const thumbSrc = (f: Funnel) => `/${f.dir ?? 'funnels'}/thumbs/${f.file.replace('.html', '.jpeg')}`
-
-const APP_SHOTS = [
-  ...mobileApps.map((a) => a.imageSrc).filter((s): s is string => !!s),
-  '/placeholders/extension-1.jpg',
-  '/placeholders/extension-2.jpg',
-]
-
-const BUILD_DESC = 'PLACEHOLDER - tell me what to put here: two lines on what this project is and the result it got.'
-
-/** The three featured builds: each its own card in the stack, each its own
- *  pop-up. */
-const BUILDS: Project[] = [
-  { id: 'ticketing', cat: 'work', index: '03', kicker: 'Placeholder category', title: 'Featured Project One', desc: BUILD_DESC, Icon: () => <Ticket size={20} weight="duotone" />, logos: [GHL], eyebrow: 'Featured build', Section: TicketingPanel, Preview: () => null },
-  { id: 'framework', cat: 'ai', index: '04', kicker: 'Placeholder category', title: 'Featured Project Two', desc: BUILD_DESC, Icon: () => <Robot size={20} weight="duotone" />, logos: [CLAUDE_CODE], eyebrow: 'Featured build', Section: FrameworkPanel, Preview: () => null },
-  { id: 'workflow', cat: 'ai', index: '05', kicker: 'Placeholder category', title: 'Featured Project Three', desc: BUILD_DESC, Icon: () => <FlowArrow size={20} weight="duotone" />, logos: [CLAUDE_CODE, CODEX, HERMES], eyebrow: 'Featured build', Section: WorkflowPanel, Preview: () => null },
-]
-
-const leaves = (n: StackNode): StackNode[] => (n.children?.length ? n.children.flatMap(leaves) : [n])
-const AI_LEAVES = leaves(aiStack)
+const FUNNEL_SHOTS = graphicDesigns.length
+  ? graphicDesigns.map((design) => design.imageSrc)
+  : [gymFunnel[0], bookingFunnel[0], websiteFunnel[0]].filter(Boolean).map(thumbSrc)
 
 /* ---------- Previews ---------- */
 
 function WorkflowsPreview() {
   return (
-    <div className="bento__media bento__reel" aria-hidden="true">
+    <div className="bento__media bento__reel bento__reel--featured" aria-hidden="true">
       <div className="bento__reel-track">
-        {[...WF_SHOTS, ...WF_SHOTS].map((src, i) => (
-          <span key={i} className="bento__shot">
+        {WF_SHOTS.map((src) => (
+          <span key={src} className="bento__shot">
             <img src={src} alt="" loading="lazy" decoding="async" />
           </span>
         ))}
@@ -95,20 +76,24 @@ function WorkflowsPreview() {
   )
 }
 
-/** A paper mock of the plan document, the way SamplePlan previews it. */
+/** A compact preview of the Ecommerce operations case study. */
 function PlanPreview() {
   return (
-    <div className="bento__media bento__doc" aria-hidden="true">
-      <span className="bento__doc-eyebrow">Placeholder document</span>
-      <span className="bento__doc-title">Your document title here.</span>
+    <div className="bento__media bento__doc bento__doc--ecommerce" aria-hidden="true">
+      <div className="bento__ecommerce-heading">
+        <img src="/icons/shopify.svg" alt="" />
+        <span>
+          <span className="bento__doc-eyebrow">Sample Project</span>
+          <span className="bento__doc-title">Ecommerce Operations</span>
+        </span>
+      </div>
       <span className="bento__doc-flow">
-        <i>Step</i>
-        <i>Step</i>
-        <i>Step?</i>
-        <i className="is-on">Result</i>
+        <i>Catalog</i>
+        <i>Orders</i>
+        <i>Inventory</i>
+        <i className="is-on">Customer care</i>
       </span>
-      <span className="bento__doc-line" />
-      <span className="bento__doc-line bento__doc-line--short" />
+      <span className="bento__ecommerce-tools">Shopify · Salesforce · Google Workspace</span>
     </div>
   )
 }
@@ -117,56 +102,46 @@ function PlanPreview() {
 function FunnelsPreview() {
   return (
     <div className="bento__media bento__fan" aria-hidden="true">
-      {FUNNEL_SHOTS.map((f, i) => (
-        <span key={f.file} className="bento__photo bento__photo--page" style={{ ['--i' as string]: i }}>
-          <img src={thumbSrc(f)} alt="" loading="lazy" decoding="async" />
+      {FUNNEL_SHOTS.map((src, i) => (
+        <span key={src} className="bento__photo bento__photo--page" style={{ ['--i' as string]: i }}>
+          <img src={src} alt="" loading="lazy" decoding="async" />
         </span>
       ))}
     </div>
   )
 }
 
-function AIPreview() {
-  const half = Math.ceil(AI_LEAVES.length / 2)
-  const rows = [AI_LEAVES.slice(0, half), AI_LEAVES.slice(half)]
+function LogisticsPreview() {
   return (
-    <div className="bento__media bento__chips" aria-hidden="true">
-      {rows.map((row, r) => (
-        <div key={r} className="bento__chip-row" data-dir={r ? 'right' : 'left'}>
-          <div className="bento__chip-track">
-            {[...row, ...row].map((n, i) => (
-              <span key={`${n.id}-${i}`} className="bento__chip" data-status={n.status}>
-                <n.Icon size={15} weight="duotone" />
-                {n.name}
-              </span>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function AppsPreview() {
-  return (
-    <div className="bento__media bento__reel bento__reel--row" aria-hidden="true">
-      <div className="bento__reel-track">
-        {[...APP_SHOTS, ...APP_SHOTS].map((src, i) => (
-          <span key={i} className="bento__shot bento__shot--app">
-            <img src={src} alt="" loading="lazy" decoding="async" />
-          </span>
-        ))}
+    <div className="bento__media bento__logistics-preview" aria-hidden="true">
+      <div className="bento__logistics-preview-head">
+        <LogisticsIcon size={18} />
+        <span>
+          <span className="bento__logistics-preview-label">Illustrative sample</span>
+          <strong>Daily logistics</strong>
+        </span>
+      </div>
+      <div className="bento__logistics-preview-row">
+        <span>ORD-2401</span>
+        <span>Supplier confirmed</span>
+      </div>
+      <div className="bento__logistics-preview-row">
+        <span>ORD-2402</span>
+        <span>In transit</span>
+      </div>
+      <div className="bento__logistics-preview-row">
+        <span>ORD-2403</span>
+        <span>Inventory check</span>
       </div>
     </div>
   )
 }
 
 const PROJECTS: Project[] = [
-  { id: 'workflows', cat: 'work', index: '01', title: 'Project Title', desc: 'PLACEHOLDER - tell me what to put here: what these screens show.', Icon: FlowIcon, logos: [GHL], eyebrow: 'Screenshots', Section: AutomationsPanel, span: 2, Preview: WorkflowsPreview },
-  { id: 'plan', cat: 'work', index: '02', title: 'Sample Document', desc: 'PLACEHOLDER - tell me what to put here: the document this opens.', Icon: PlanIcon, logos: [GHL], eyebrow: 'Sample document', Section: PlanPanel, Preview: PlanPreview },
-  { id: 'funnels', cat: 'sites', index: '06', title: 'Pages and sites', desc: 'PLACEHOLDER - the pages in this reel. Spin the reel.', Icon: GlobeIcon, logos: [GHL], eyebrow: 'Pages and sites', Section: BarrelPanel, Preview: FunnelsPreview },
-  { id: 'ai', cat: 'ai', index: '07', title: 'Your systems title here', desc: 'PLACEHOLDER - tell me what to put here: the systems you run.', Icon: SparkIcon, logos: [CLAUDE_CODE, CODEX, HERMES], eyebrow: 'Your systems', Section: AIWindow, Preview: AIPreview },
-  { id: 'apps', cat: 'apps', index: '08', title: 'Apps and tools', desc: 'PLACEHOLDER - tell me what to put here: the apps and tools you ship.', Icon: DeviceIcon, logos: [PLAY, EXPO, CHROME], eyebrow: 'Your apps', Section: AppsWindow, span: 2, Preview: AppsPreview },
+  { id: 'plan', cat: 'work', index: '01', title: 'Ecommerce Operations & Shopify Store Management', category: 'Ecommerce VA | Shopify | Operations Support', desc: 'Ecommerce operations support covering Shopify product listings, catalog management, inventory monitoring, order processing, fulfillment coordination, customer inquiries, and order tracking.', Icon: PlanIcon, logos: ['/icons/shopify.svg'], eyebrow: 'Sample Project', caseStudy: '/projects/ecommerce-dashboard', appRoute: true, Preview: PlanPreview },
+  { id: 'workflows', cat: 'work', index: '02', title: 'Pearl White – Website Development & Booking Automation', category: 'Web Development | GoHighLevel | Business Automation', desc: 'A premium website development project for a transient accommodation business, featuring responsive website design, booking inquiry forms, an accommodation pricing calculator, and GoHighLevel workflow integration.', Icon: FlowIcon, logos: [GHL], eyebrow: 'Pearl White', caseStudy: '/projects/pearl-white-case-study.html', span: 2, Preview: WorkflowsPreview },
+  { id: 'funnels', cat: 'sites', index: '06', title: 'Graphics Design', desc: 'Creative visual designs for branding, marketing materials, social media, promotional content, and digital experiences.', Icon: GlobeIcon, logos: [GHL], eyebrow: 'Graphic design', Section: BarrelPanel, Preview: FunnelsPreview },
+  { id: 'logistics', cat: 'work', index: '04', title: 'Logistics & Supply Chain Operations', category: logisticsProject.tags.join(' | '), desc: logisticsProject.description, Icon: LogisticsIcon, logos: [], eyebrow: 'Logistics Operations', Preview: LogisticsPreview },
 ]
 
 /** The icon tile, or the real marks stacked horizontally in its place. */
@@ -235,7 +210,6 @@ export default function ProjectsGrid() {
   const [cat, setCat] = useState<Cat | 'all'>('all')
   const keep = (p: Project) => !phone || cat === 'all' || p.cat === cat
   const projects = PROJECTS.filter(keep)
-  const builds = BUILDS.filter(keep)
   const triggerRef = useRef<HTMLElement | null>(null)
 
   const show = useCallback((p: Project, el: HTMLElement) => {
@@ -247,62 +221,14 @@ export default function ProjectsGrid() {
     requestAnimationFrame(() => triggerRef.current?.focus())
   }, [])
 
-  const stack = builds.length > 0 ? (
-    <div className="bento__stack">
-
-        {builds.map((b) => (
-
-          <button
-
-            key={b.id}
-
-            type="button"
-
-            className="bento__card bento__card--btn bento__card--build"
-
-            onClick={(e) => show(b, e.currentTarget)}
-
-            aria-haspopup="dialog"
-
-          >
-
-            <span className="bento__build-plate">
-
-              {b.logos?.length ? <img src={b.logos[0]} alt="" width={22} height={22} /> : <b.Icon />}
-
-            </span>
-
-            <span className="bento__build-text">
-
-              <span className="bento__kicker">{b.kicker}</span>
-
-              <span className="bento__build-title">{b.title}</span>
-
-              <span className="bento__build-desc">{b.desc}</span>
-
-            </span>
-
-            <span className="bento__build-arrow">
-
-              <ArrowUpRight size={13} weight="bold" aria-hidden="true" />
-
-            </span>
-
-          </button>
-
-        ))}
-
-      </div>
-  ) : null
-
   return (
     <section className="pgrid" aria-labelledby="projects-title">
       <header className="pgrid__head">
-        <span className="pgrid__eyebrow">Projects</span>
+        <span className="pgrid__eyebrow">Featured Projects</span>
         <h1 className="pgrid__title" id="projects-title">
-          Your projects headline goes right here.
+        Selected Work & Digital Solutions.
         </h1>
-        <p className="pgrid__lede">PLACEHOLDER - tell me what to put here: one line on the work below. Open a card to see it full size.</p>
+        <p className="pgrid__lede">Selected case studies spanning ecommerce operations, web development, and digital business workflows.</p>
       </header>
 
       {phone && (
@@ -326,34 +252,63 @@ export default function ProjectsGrid() {
             not a seventh card. aria-hidden: the lede already says it. */}
         <span className="pgrid__hint" aria-hidden="true">
           <CursorClick size={14} weight="duotone" />
-          Click a card to open it
+          Featured case studies
         </span>
         <div className="bento bento--projects">
-          {projects.map((p) => (
-            <Fragment key={p.id}>
-            <button
-              type="button"
-              className={`bento__card bento__card--btn${p.span === 2 ? ' bento__card--wide' : ''}`}
-              data-id={p.id}
-              onClick={(e) => show(p, e.currentTarget)}
-              aria-haspopup="dialog"
-            >
-              <span className="bento__head">
-                <Marks p={p} />
-                <span className="bento__title">{p.title}</span>
-                <span className="bento__desc">{p.desc}</span>
-                <ArrowUpRight size={15} weight="bold" aria-hidden="true" className="bento__arrow" />
-              </span>
-              <p.Preview />
-            </button>
-            {p.id === 'plan' && stack}
-            </Fragment>
-          ))}
-          {!projects.some((p) => p.id === 'plan') && stack}
+          {projects.map((p) => {
+            const content = (
+              <>
+                <span className="bento__head">
+                  <Marks p={p} />
+                  <span className="bento__title">{p.title}</span>
+                  {p.category && <span className="bento__project-category">{p.category}</span>}
+                  <span className="bento__desc">{p.desc}</span>
+                  {!p.caseStudy && <ArrowUpRight size={15} weight="bold" aria-hidden="true" className="bento__arrow" />}
+                </span>
+                <p.Preview />
+              </>
+            )
+
+            return (
+              <Fragment key={p.id}>
+                {p.caseStudy ? (
+                  p.appRoute ? (
+                    <Link
+                      to={p.caseStudy}
+                      className={`bento__card bento__card--btn bento__card--featured${p.span === 2 ? ' bento__card--wide' : ''}`}
+                      data-id={p.id}
+                    >
+                      {content}
+                      <span className="bento__project-link">View Project <ArrowUpRight size={14} weight="bold" aria-hidden="true" /></span>
+                    </Link>
+                  ) : (
+                    <a
+                      href={p.caseStudy}
+                      className={`bento__card bento__card--btn bento__card--featured${p.span === 2 ? ' bento__card--wide' : ''}`}
+                      data-id={p.id}
+                    >
+                      {content}
+                      <span className="bento__project-link">View Project <ArrowUpRight size={14} weight="bold" aria-hidden="true" /></span>
+                    </a>
+                  )
+                ) : (
+                  <button
+                    type="button"
+                    className={`bento__card bento__card--btn${p.span === 2 ? ' bento__card--wide' : ''}`}
+                    data-id={p.id}
+                    onClick={(e) => show(p, e.currentTarget)}
+                    aria-haspopup="dialog"
+                  >
+                    {content}
+                  </button>
+                )}
+              </Fragment>
+            )
+          })}
         </div>
       </div>
 
-      {open && (
+      {open?.Section && (
         <ProjectModal project={open} onClose={close}>
           <open.Section />
         </ProjectModal>

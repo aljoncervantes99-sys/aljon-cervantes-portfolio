@@ -1,10 +1,15 @@
 import ProjectsGrid from '@/components/ProjectsGrid'
+import ImpactSection from '@/components/ImpactSection'
 
 /**
- * Projects is a fixed viewport like Home: six cards, one per body of work,
- * each opening the real section in a dialog. No ViewShell - there is no
- * scrolling stack here and the reveal hooks would have nothing to reveal.
+ * The featured work stays first, followed by the approach section before the
+ * separate About route in the portfolio's content sequence.
  */
 export default function ProjectsView() {
-  return <ProjectsGrid />
+  return (
+    <>
+      <ProjectsGrid />
+      <ImpactSection />
+    </>
+  )
 }

@@ -2519,7 +2519,8 @@ img.about__stat-badge {
   padding: 6px 11px;
   opacity: 0;
   transition: opacity 0.16s ease;
-  white-space: nowrap;
+  white-space: normal;
+  width: min(250px, 70vw);
   box-shadow: 0 12px 26px -10px rgba(255, 122, 26, 0.6);
 }
 .funnels__barrel-label.is-on {
@@ -2538,6 +2539,12 @@ img.about__stat-badge {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: -0.01em;
+}
+.funnels__barrel-label-desc {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  line-height: 1.4;
 }
 .funnels__barrel-hint {
   position: absolute;
@@ -3593,6 +3600,25 @@ img.about__stat-badge {
   /* Turns the screen into the query container the stage measures itself
      against. inline-size only, so aspect-ratio still resolves the height. */
   container-type: inline-size;
+}
+.flagship__device-screen.flagship__device-screen--screenshot {
+  height: auto;
+  aspect-ratio: 1343 / 549;
+  background: #f2f2f2;
+}
+.flagship__stage--screenshot {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 0 0 13px 13px;
+  background: #f2f2f2;
+}
+.flagship__screenshot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
 /* ---- The mock stage ------------------------------------------------------
@@ -5786,10 +5812,7 @@ img.about__stat-badge {
 }
 
 /* ==========================================================================
-   WORKFLOW SAMPLES - marquee of real build screenshots + macOS image modal
-   Sits under Autopilot. The strip loops via the shared `marquee` keyframe
-   (translate -50% over a duplicated list); a click opens the full image in a
-   faux macOS window. Strip pauses on hover/focus so frames are clickable.
+   WORKFLOW SAMPLES - featured Pearl White website preview
    ========================================================================== */
 .wfs {
   padding: clamp(4px, 1.5vh, 20px) 0 clamp(48px, 7vh, 90px);
@@ -5832,7 +5855,8 @@ img.about__stat-badge {
   padding: 0;
   cursor: pointer;
   flex: 0 0 auto;
-  width: clamp(420px, 40vw, 620px);
+  width: clamp(520px, 55vw, 900px);
+  aspect-ratio: 16 / 9;
   border-radius: 16px;
   overflow: hidden;
   background: var(--white);
@@ -5965,16 +5989,57 @@ img.about__stat-badge {
   object-fit: contain;
 }
 
-@media (max-width: 720px) {
-  /* frames must fit a phone: ~82vw shows one card with a peek of the next,
-     instead of a 420px+ frame that overflows and clips on both edges */
-  .wfs__frame { width: min(82vw, 440px); }
-  .wfs__caption { padding: 0 24px; }
+.wfs__project {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+.wfs__image-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background: #0c1424;
+  box-shadow: 0 28px 70px -38px rgba(0, 0, 0, 0.8);
+}
+.wfs__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transition: transform 500ms var(--ease-out);
+}
+.wfs__project:hover .wfs__image {
+  transform: scale(1.015);
+}
+.wfs__details {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: clamp(20px, 3vw, 32px) 20px 0;
+  text-align: center;
+  color: var(--white);
+}
+.wfs__eyebrow {
+  color: var(--orange);
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.wfs__title {
+  margin-top: 8px;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 600;
+  line-height: 1.15;
+}
+.wfs__description {
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 15px;
+  line-height: 1.7;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* no auto-scroll; let the strip be swiped/scrolled by hand instead */
-  .wfs__track { animation: none; }
-  .wfs__strip { overflow-x: auto; }
+  .wfs__image { transition: none; }
 }
-

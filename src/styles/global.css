@@ -37,6 +37,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-kerning: normal;
   overflow-x: hidden;
   /* Fade the page in on every load. On first visit this plays behind
      the intro overlay (invisible). On refresh it's the entrance animation. */

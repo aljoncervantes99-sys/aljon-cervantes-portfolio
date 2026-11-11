@@ -9,8 +9,7 @@
      .hprofile    Home's identity header (the rail, laid flat)
      .hstats      the three proof facts as a compact glance widget
      .hsec        section heads; a chevron where the head links
-     .htiles      Home's explore row: shelf cards in a snap row
-     .hproof      the first testimonial as a video stage
+     .hproof       the first testimonial as a video stage
    plus the page-level corrections: room at the bottom for the bar,
    Projects as a two-column grid with a filter, Contact with the form first.
    Scoped to max-width: 1099px; the desktop never sees it. The motion tokens,
@@ -360,70 +359,6 @@
   .hsec__link svg { color: var(--muted); }
   .hsec__link:active { opacity: 0.55; }
 
-  /* ---------- Home: explore row, shelf cards ----------
-     The media is the card; the words sit on the page under it. The whole
-     tile is the button. Proximity snap lets a flick coast and settle on the
-     nearest tile instead of fighting the throw. */
-  .htiles {
-    display: flex;
-    gap: 12px;
-    list-style: none;
-    margin: 0 calc(-1 * var(--panel-x));
-    padding: 6px var(--panel-x) 10px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    scroll-padding-inline: var(--panel-x);
-    scrollbar-width: none;
-  }
-  .htiles::-webkit-scrollbar { display: none; }
-  .htiles > li { flex: 0 0 auto; scroll-snap-align: start; }
-  .htile {
-    display: flex;
-    flex-direction: column;
-    width: min(208px, 58vw);
-    color: var(--navy);
-    transition: transform var(--dur-med) var(--ease-out);
-  }
-  .htile:active { transform: scale(0.97); transition-duration: 100ms; }
-  .htile__media {
-    position: relative;
-    display: block;
-    height: 132px;
-    border-radius: 16px;
-    overflow: hidden;
-    background: var(--white);
-    box-shadow: 0 1px 1.5px rgba(6, 12, 26, 0.04), 0 10px 24px -18px rgba(11, 30, 63, 0.45);
-  }
-  /* The hairline sits over the image, so a white screenshot still has an edge. */
-  .htile__media::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    box-shadow: inset 0 0 0 1px var(--line);
-    pointer-events: none;
-  }
-  .htile__img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
-  .htile__glyph {
-    display: grid;
-    place-items: center;
-    color: var(--orange);
-    background: linear-gradient(160deg, color-mix(in srgb, var(--orange) 13%, transparent), var(--white) 62%);
-  }
-  /* Showcase: the cool blue of the Home glass plate instead of orange. */
-  .htile--accent .htile__glyph { background: linear-gradient(160deg, rgba(24, 56, 140, 0.13), var(--white) 62%); }
-  .htile__body { display: flex; flex-direction: column; gap: 3px; padding: 10px 2px 0; }
-  .htile__n {
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--orange-ink);
-  }
-  .htile__title { font-size: 15px; font-weight: 600; line-height: 1.2; letter-spacing: -0.014em; }
-  .htile__desc { font-size: 12.5px; line-height: 1.45; letter-spacing: 0.004em; color: var(--muted); }
-
   /* ---------- Home: client proof, a video stage ---------- */
   .hproof {
     display: block;
@@ -520,10 +455,8 @@
     .tabbar__tab:active,
     .tabbar__tab--primary:active .tabbar__fab,
     .qmenu__button:active,
-    .htile:active,
     .hproof:active { transform: none; }
     .tabbar__tab:active { background: var(--tint); }
-    .htile:active .htile__media,
     .hproof:active .hproof__stage { opacity: 0.85; }
     .qmenu__panel,
     .qmenu__panel.is-open { transform: none; }
@@ -533,13 +466,7 @@
     .hstats,
     .qmenu__button,
     .qmenu__panel { box-shadow: inset 0 0 0 1px var(--line-strong); }
-    .htile__media::after { box-shadow: inset 0 0 0 1px var(--line-strong); }
   }
-}
-
-/* Tablets: the shelf grows with the screen. */
-@media (min-width: 640px) and (max-width: 1099px) {
-  .htile { width: min(260px, 40vw); }
 }
 
 @media (max-width: 639px) {

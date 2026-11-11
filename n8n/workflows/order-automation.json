@@ -1,0 +1,23 @@
+{
+  "name": "smartlogix-order-automation",
+  "active": false,
+  "meta": {
+    "smartlogix": {
+      "prepared": true,
+      "connected": false,
+      "stage": 1,
+      "approvalsRequired": false,
+      "integrations": ["shopify", "supabase", "n8n", "gmail"]
+    }
+  },
+  "notes": "Prepared architecture only. Receives Shopify order webhooks via secure endpoint, validates order data, checks availability, persists to Supabase idempotently, updates fulfillment, and triggers notifications. No paid services connected.",
+  "nodes": [
+    { "name": "Shopify Order Webhook", "type": "webhook/trigger", "notes": "Inbound Shopify event forwarded only after HMAC verification in server endpoint." },
+    { "name": "Validate & Dedupe", "type": "function", "notes": "Validate payload and reject duplicates via idempotency key/external event id." },
+    { "name": "Check Availability", "type": "supabase/rpc", "notes": "Read/lock inventory state via transactional RPC." },
+    { "name": "Persist Order", "type": "supabase/rpc", "notes": "Save order, items, fulfillment status." },
+    { "name": "Notify", "type": "http/gmail", "notes": "Send notification only if Gmail configured; otherwise create in-app alert." },
+    { "name": "Log Run", "type": "http", "notes": "POST signed result to /api/smartlogix/n8n/callback." }
+  ],
+  "connections": {}
+}

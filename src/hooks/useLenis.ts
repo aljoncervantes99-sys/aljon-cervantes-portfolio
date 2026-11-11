@@ -82,7 +82,9 @@ export function useLenis() {
         // settles fast enough that input does not feel disconnected.
         duration: 0.9,
         easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -12 * t)),
-        smoothWheel: true,
+        // Keep wheel input native on the nested shell scroller; Lenis can
+        // cancel wheel events without advancing this panel in some browsers.
+        smoothWheel: false,
         wheelMultiplier: 1,
         touchMultiplier: 1.5,
       })

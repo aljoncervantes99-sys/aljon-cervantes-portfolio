@@ -1,9 +1,9 @@
 /* ============================================
    SHELL - the fixed viewport layout
-   From 1100px up the page itself never scrolls: `.shell` is exactly one
-   viewport tall with overflow hidden, the rail is a flex column inside it,
-   and only `#main-content` scrolls. Home is the one view sized to fit that
-   box exactly, so it does not scroll at all.
+   From 1100px up the shell is exactly one viewport tall with overflow hidden,
+   the rail is a flex column inside it, and `#main-content` scrolls.
+   The Home panel retains this shell but scrolls naturally when the overview
+   cards extend beyond the viewport.
 
    Consequence worth remembering: every scroll read has to go through
    `#main-content`, never the window. Lenis is constructed with
@@ -49,8 +49,42 @@
     border-radius: var(--radius-pill);
   }
 
-  /* Home opts out of scrolling entirely: it is laid out to the panel box. */
+  /* Home keeps its fixed-view marker for accessibility zoom but scrolls its
+     expanded overview rather than clipping the content. */
   .shell__panel[data-fixed='true'] { overflow: hidden; }
+  .shell__panel--home[data-fixed='true'] { overflow-y: auto; }
+
+  .shell__panel[data-fixed='false'] > .pgrid {
+    height: auto;
+    min-height: 100%;
+    grid-template-rows: auto auto;
+    align-content: start;
+  }
+
+  .shell__panel[data-fixed='false'] .pgrid__glass,
+  .shell__panel[data-fixed='false'] .tgrid__glass,
+  .shell__panel[data-fixed='false'] .cgrid__glass {
+    height: auto;
+  }
+
+  .shell__panel[data-fixed='false'] .pgrid__glass {
+    flex: 0 0 auto;
+  }
+
+  .shell__panel[data-fixed='false'] .bento--projects {
+    height: auto;
+    grid-template-rows: none;
+    grid-auto-rows: minmax(240px, auto);
+  }
+
+  .shell__panel[data-fixed='false'] .bento__stack {
+    grid-template-rows: repeat(3, minmax(84px, auto));
+  }
+
+  .shell__panel[data-fixed='false'] .tgrid__stage {
+    height: clamp(320px, 42vh, 480px);
+    flex: 0 0 auto;
+  }
 }
 
 /* ---------- Scrolling views ----------
@@ -140,4 +174,6 @@
   --tint: rgba(11, 30, 63, 0.05);
   --tint-strong: rgba(11, 30, 63, 0.09);
   --orange-ink: #B4490A;
+  background: #FFFFFF;
+  border-color: rgba(11, 30, 63, 0.08);
 }

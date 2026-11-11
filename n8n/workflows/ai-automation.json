@@ -1,0 +1,22 @@
+{
+  "name": "smartlogix-ai-automation",
+  "active": false,
+  "meta": {
+    "smartlogix": {
+      "prepared": true,
+      "connected": false,
+      "stage": 1,
+      "approvalsRequired": true,
+      "integrations": ["supabase", "n8n", "ai"]
+    }
+  },
+  "notes": "Prepared architecture only. Extracts PO data, summarizes issues, recommends replenishment, drafts follow-ups/reports via server-side AI provider when configured. Human approval required for consequential actions.",
+  "nodes": [
+    { "name": "Manual/Scheduled Trigger", "type": "manual/schedule", "notes": "Operator or scheduled run." },
+    { "name": "Gather Operational Context", "type": "supabase/query", "notes": "Read verified orders, inventory, shipments, suppliers." },
+    { "name": "AI Assist Request", "type": "http", "notes": "Call secure server-side AI endpoint (Ollama/OpenAI), only if configured." },
+    { "name": "Store Artifact", "type": "supabase", "notes": "Persist extraction/summary/recommendation/draft/report." },
+    { "name": "Log Run", "type": "http", "notes": "POST signed result to /api/smartlogix/n8n/callback." }
+  ],
+  "connections": {}
+}

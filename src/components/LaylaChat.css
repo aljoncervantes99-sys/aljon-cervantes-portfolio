@@ -1,0 +1,345 @@
+.layla-chat {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 80;
+  font-family: var(--font-display);
+}
+
+.layla-chat__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: #0b1e3f;
+  color: #fff;
+  box-shadow: 0 10px 26px rgba(6, 12, 26, 0.28);
+  cursor: pointer;
+  font: 600 14px/1 var(--font-display);
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.layla-chat__toggle:hover {
+  transform: translateY(-2px);
+  background: #122a50;
+  box-shadow: 0 14px 30px rgba(6, 12, 26, 0.34);
+}
+
+.layla-chat__toggle:focus-visible,
+.layla-chat__close:focus-visible,
+.layla-chat__send:focus-visible,
+.layla-chat__suggestion:focus-visible {
+  outline: 2px solid #ff7a1a;
+  outline-offset: 3px;
+}
+
+.layla-chat__toggle > svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: #ff9a4d;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.layla-chat__toggle.is-open {
+  width: 54px;
+  padding: 0;
+  border-color: rgba(255, 122, 26, 0.4);
+  background: #101a2d;
+}
+
+.layla-chat__panel {
+  position: absolute;
+  right: 0;
+  bottom: 68px;
+  display: flex;
+  flex-direction: column;
+  width: min(390px, calc(100vw - 32px));
+  height: min(570px, calc(100dvh - 112px));
+  min-height: 330px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  background: linear-gradient(145deg, #0d1a31, #091426 52%, #08111f);
+  color: #f4f4ed;
+  box-shadow:
+    0 20px 58px rgba(3, 7, 15, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  animation: layla-chat-enter 180ms var(--ease-out) both;
+}
+
+@keyframes layla-chat-enter {
+  from { opacity: 0; transform: translateY(8px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.layla-chat__header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 72px;
+  padding: 14px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(110deg, #102340, #0b1e3f);
+}
+
+.layla-chat__avatar {
+  display: grid;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid rgba(255, 154, 77, 0.52);
+  border-radius: 50%;
+  background: rgba(255, 122, 26, 0.14);
+  color: #ff9a4d;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.layla-chat__heading {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.layla-chat__heading strong {
+  overflow: hidden;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.layla-chat__heading > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(244, 244, 237, 0.66);
+  font-size: 11px;
+}
+
+.layla-chat__heading i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #42c98a;
+  box-shadow: 0 0 0 3px rgba(66, 201, 138, 0.13);
+}
+
+.layla-chat__close,
+.layla-chat__send {
+  display: grid;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(244, 244, 237, 0.72);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.layla-chat__close:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #fff;
+}
+
+.layla-chat__close svg,
+.layla-chat__send svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.layla-chat__conversation {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 15px;
+  overscroll-behavior: contain;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-width: thin;
+}
+
+.layla-chat__message {
+  max-width: 88%;
+  padding: 11px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px 14px 14px 4px;
+  background: #14233a;
+  color: rgba(244, 244, 237, 0.93);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.layla-chat__message--visitor {
+  align-self: flex-end;
+  border-color: rgba(255, 122, 26, 0.18);
+  border-radius: 14px 14px 4px 14px;
+  background: #39291f;
+  color: #fff5ec;
+}
+
+.layla-chat__suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.layla-chat__suggestion {
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 154, 77, 0.3);
+  border-radius: 999px;
+  background: rgba(255, 122, 26, 0.07);
+  color: #ffbd8b;
+  cursor: pointer;
+  font: 500 11px/1.35 var(--font-display);
+  text-align: left;
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+
+.layla-chat__suggestion:hover {
+  border-color: rgba(255, 154, 77, 0.62);
+  background: rgba(255, 122, 26, 0.15);
+}
+
+.layla-chat__typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 34px;
+  padding: 0 13px;
+  border-radius: 12px 12px 12px 4px;
+  background: #14233a;
+}
+
+.layla-chat__typing span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ff9a4d;
+  animation: layla-chat-dot 900ms ease-in-out infinite;
+}
+.layla-chat__typing span:nth-child(2) { animation-delay: 120ms; }
+.layla-chat__typing span:nth-child(3) { animation-delay: 240ms; }
+
+@keyframes layla-chat-dot {
+  0%, 60%, 100% { opacity: 0.45; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+.layla-chat__form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 13px;
+  padding: 6px 6px 6px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.045);
+  transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.layla-chat__form:focus-within {
+  border-color: rgba(255, 154, 77, 0.72);
+  box-shadow: 0 0 0 3px rgba(255, 122, 26, 0.11);
+}
+
+.layla-chat__form input {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+  height: 38px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #fff;
+  font: 400 12.5px/1.4 var(--font-display);
+}
+
+.layla-chat__form input::placeholder { color: rgba(244, 244, 237, 0.43); }
+.layla-chat__send { background: #ff7a1a; color: #fff; }
+.layla-chat__send:hover:not(:disabled) { background: #ff9a4d; }
+.layla-chat__send:disabled { cursor: not-allowed; opacity: 0.42; }
+
+.layla-chat__note {
+  margin: 8px 12px 11px;
+  color: rgba(244, 244, 237, 0.43);
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.layla-chat__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+@media (max-width: 1099px) {
+  .layla-chat {
+    right: 16px;
+    bottom: calc(86px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .layla-chat__toggle:not(.is-open) {
+    width: 54px;
+    min-height: 54px;
+    gap: 0;
+    padding: 0;
+    font-size: 0;
+  }
+
+  .layla-chat__panel {
+    bottom: 66px;
+    height: min(560px, calc(100dvh - 170px - env(safe-area-inset-bottom, 0px)));
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .layla-chat { right: 12px; }
+  .layla-chat__toggle:not(.is-open) {
+    width: 50px;
+    min-height: 50px;
+    padding: 0;
+  }
+  .layla-chat__panel {
+    right: -4px;
+    width: calc(100vw - 24px);
+    border-radius: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layla-chat__panel,
+  .layla-chat__typing span { animation: none; }
+}

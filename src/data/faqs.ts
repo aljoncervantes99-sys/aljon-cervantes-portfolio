@@ -3,28 +3,28 @@ export type QA = { q: string; a: string }
 /**
  * The questions people ask before they email. One list, used by the FAQ
  * accordion on the Contact view (and the legacy long-scroll FAQ section).
- * Five questions, two or three sentences each: the accordion sits in a
+ * Five questions and answers: the accordion sits in a
  * fixed panel and more than that pushes the email row off the plate.
  */
 export const FAQS: QA[] = [
   {
-    q: 'What do you do?',
-    a: 'PLACEHOLDER - tell me what to put here: the kinds of work you take on, and who it is usually for.',
+    q: 'What services do you offer?',
+    a: 'I provide Ecommerce VA support, Shopify store management, website development, graphics design, and logistics and supply chain support.',
   },
   {
-    q: 'How fast can you start?',
-    a: 'PLACEHOLDER - tell me what to put here: your usual lead time for small fixes vs. larger projects, and your working hours.',
+    q: 'What platforms and tools do you work with?',
+    a: 'I work with tools such as Shopify, Salesforce, GoHighLevel, Excel, Google Sheets, Canva, and other digital productivity and business tools.',
   },
   {
-    q: 'How much do you charge?',
-    a: 'PLACEHOLDER - tell me what to put here: how you price (hourly, per project, retainer) and how a quote is put together.',
+    q: 'Can you work with international clients?',
+    a: 'Yes. I can collaborate remotely with businesses and clients across different locations and time zones.',
   },
   {
-    q: 'Where are you based?',
-    a: 'PLACEHOLDER - tell me what to put here: your location or timezone, and which client timezones you overlap with.',
+    q: 'How do you manage projects and communication?',
+    a: 'I use organized workflows, clear communication, and digital collaboration tools to keep tasks and project updates organized.',
   },
   {
-    q: 'What happens after I write?',
-    a: 'PLACEHOLDER - tell me what to put here: how fast you reply and what the next step looks like.',
+    q: 'How can we get started?',
+    a: "Send me a message through the contact form with your project requirements. I'll review your inquiry and discuss the next steps.",
   },
 ]

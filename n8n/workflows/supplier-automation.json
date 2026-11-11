@@ -1,0 +1,22 @@
+{
+  "name": "smartlogix-supplier-automation",
+  "active": false,
+  "meta": {
+    "smartlogix": {
+      "prepared": true,
+      "connected": false,
+      "stage": 1,
+      "approvalsRequired": true,
+      "integrations": ["supabase", "n8n", "gmail"]
+    }
+  },
+  "notes": "Prepared architecture only. Tracks POs/delivery dates, detects overdue orders, drafts supplier follow-ups. Sending commitments requires human approval.",
+  "nodes": [
+    { "name": "PO Monitor Schedule", "type": "schedule", "notes": "Check expected delivery dates and open POs." },
+    { "name": "Detect Overdue", "type": "supabase/query", "notes": "Identify overdue or at-risk supplier orders." },
+    { "name": "Draft Follow-up", "type": "ai/http", "notes": "Prepare draft text via approved server-side AI flow when configured." },
+    { "name": "Create Approval Task", "type": "supabase", "notes": "Store draft and require approval before send." },
+    { "name": "Log Run", "type": "http", "notes": "POST signed result to /api/smartlogix/n8n/callback." }
+  ],
+  "connections": {}
+}

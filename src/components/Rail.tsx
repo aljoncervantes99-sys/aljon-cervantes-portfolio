@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { SealCheck } from '@/components/slab'
+import { FileText, SealCheck, ShieldCheck, type Icon } from '@/components/slab'
 import ThemeGlyph from './ThemeGlyph'
 import {
   HomeIcon,
@@ -30,13 +30,36 @@ export const RAIL_LINKS = [
   { label: 'Projects', to: '/projects', Icon: FolderIcon },
   { label: 'Services', to: '/services', Icon: StackIcon },
   { label: 'Showcase', to: '/showcase', Icon: CupIcon },
-  { label: 'Testimonials', to: '/testimonials', Icon: StarIcon },
+  { label: 'Why Work With Me?', to: '/testimonials', Icon: ShieldCheck },
   { label: 'About', to: '/about', Icon: UserIcon },
   { label: 'FAQs / Contact', to: '/contact', Icon: MessageIcon },
 ] as const
 
 export default function Rail() {
   const [theme, setThemeState] = useState<Theme>('light')
+  const railSocials: {
+    label: string
+    tooltip: string
+    href: string
+    iconPath?: string
+    iconColor?: string
+    icon?: Icon
+  }[] = [
+    ...[...profile.socials].reverse().map((social) => ({ ...social, tooltip: social.label })),
+    {
+      label: 'View My Resume',
+      tooltip: 'View My Resume',
+      href: '/Aljon_Cervantes_Resume.pdf',
+      icon: FileText,
+    },
+    {
+      label: 'Visit My Upwork Profile',
+      tooltip: 'Visit My Upwork Profile',
+      href: profile.upworkProfileUrl,
+      iconPath: '/icons/upwork.svg',
+      iconColor: '#14A800',
+    },
+  ]
 
   // The pre-paint script owns the real value; read it once mounted so the
   // button shows the icon for the action, not for the current state.
@@ -56,7 +79,7 @@ export default function Rail() {
 
         <h2 className="rail__name">
           {profile.name}
-          <SealCheck size={19} weight="fill" aria-label={profile.verifiedLabel} />
+          <SealCheck size={19} weight="fill" aria-hidden="true" />
         </h2>
         <p className="rail__handle">
           {profile.handle}
@@ -64,25 +87,47 @@ export default function Rail() {
 
         <div className="rail__actions">
           <ul className="rail__socials" role="list" aria-label="Social profiles">
-          {profile.socials.map(({ label, href, iconPath }) => (
-            <li key={label}>
-              <a
-                className="rail__social"
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-              >
-                {/* Single-colour silhouettes, tinted by currentColor through a
-                    CSS mask - same technique as the hero's social row. */}
-                <span
-                  className="rail__social-icon"
-                  style={{ ['--icon-url' as string]: `url('${iconPath}')` }}
-                  aria-hidden="true"
-                />
-              </a>
+          {railSocials.map(({ label, href, iconPath, iconColor, icon: Icon, tooltip }) => {
+            const icon = Icon ? (
+              <Icon className="rail__social-glyph" size={20} aria-hidden="true" />
+            ) : iconPath ? (
+              <span
+                className="rail__social-icon"
+                style={{
+                  ['--icon-url' as string]: `url('${iconPath}')`,
+                  color: iconColor,
+                }}
+                aria-hidden="true"
+              />
+            ) : null
+
+            return (
+              <li key={label}>
+                {href ? (
+                  <a
+                    className="rail__social"
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    title={tooltip}
+                  >
+                    {icon}
+                  </a>
+                ) : (
+                  <button
+                    className="rail__social"
+                    type="button"
+                    disabled
+                    aria-label={label}
+                    title={tooltip}
+                  >
+                    {icon}
+                  </button>
+                )}
               </li>
-            ))}
+            )
+          })}
           </ul>
 
           <button

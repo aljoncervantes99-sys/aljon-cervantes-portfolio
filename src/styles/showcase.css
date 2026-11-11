@@ -14,20 +14,18 @@
   .ktools .pgrid__lede { font-size: clamp(13px, 0.9vw, 16px); }
 }
 
-/* ---------- The head, with the badge card ----------
-   Copy on the left, the badge card bottom-right, so it sits on the baseline
-   of the lede rather than as a stray strip under it. */
+/* ---------- Page head and platform badges ---------- */
 @media (min-width: 1100px) {
   .ktools__head {
     flex-direction: row;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     gap: clamp(20px, 3vw, 48px);
   }
 }
 .ktools__head-copy { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.ktools__vote { display: flex; flex-direction: column; gap: 8px; flex: 0 0 auto; }
-.ktools__vote-label {
+.ktools__platforms { display: flex; flex-direction: column; gap: 10px; flex: 0 1 420px; }
+.ktools__platforms-label {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -38,30 +36,47 @@
   text-transform: uppercase;
   color: var(--muted);
 }
-.ktools__vote-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255, 122, 26, 0.5); }
-.ktools__vote-ask { color: var(--orange-ink); }
-.ktools__vote-frame {
-  width: 320px;
-  height: 72px;
-  max-width: 100%;
-  overflow: hidden;
-  border-radius: 16px;
-  background: var(--paper);
-  box-shadow:
-    inset 0 0 0 1px var(--line-strong),
-    0 14px 30px -22px rgba(6, 12, 26, 0.5);
+.ktools__platforms-label::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 122, 26, 0.65);
 }
-.ktools__vote-frame iframe { display: block; }
-.ktools__vote-card {
+.ktools__platform-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.ktools__platform {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 0 16px 0 12px;
-  text-decoration: none;
-  color: var(--muted);
+  gap: 8px;
+  min-height: 40px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 }
-.ktools__vote-card img { flex: 0 0 auto; width: 48px; height: 48px; }
-.ktools__vote-text { font-size: 13px; font-weight: 600; line-height: 1.3; }
+.ktools__platform-mark {
+  display: grid;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+}
+.ktools__platform-mark img { display: block; max-width: 22px; max-height: 22px; object-fit: contain; }
+.ktools__platform-mark--excel {
+  border-radius: 4px;
+  background: #217346;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.ktools__platform-mark--sheets { grid-template-columns: repeat(2, 6px); grid-template-rows: repeat(2, 6px); gap: 2px; }
+.ktools__platform-mark--sheets i { width: 6px; height: 6px; border-radius: 1px; background: #34a853; }
+.ktools__platform-mark--sheets i:nth-child(2),
+.ktools__platform-mark--sheets i:nth-child(3) { background: #188038; }
 
 /* ---------- Layout ----------
    On Projects, Flagship is a two-column callout: a tall copy column beside
@@ -84,13 +99,14 @@
   column-gap: 0;
   row-gap: clamp(22px, 3vw, 40px);
 }
+.ktools .flagship--screenshot { grid-template-areas: "header" "showcase"; }
 
 /* The identity strip. One row across the top: who it is on the left, what it
    is in the middle, the way in on the right. The page head already carries an
    h1, so this title steps down rather than competing with it. */
 .ktools .flagship__header {
   display: grid;
-  grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr) auto;
   grid-template-areas:
     "eyebrow desc cta"
     "title   desc cta";
@@ -105,8 +121,8 @@
 .ktools .flagship__title {
   grid-area: title;
   align-self: start;
-  font-size: clamp(26px, 2.6vw, 40px);
-  white-space: nowrap;
+  font-size: clamp(24px, 2.2vw, 36px);
+  white-space: normal;
 }
 .ktools .flagship__desc {
   grid-area: desc;
@@ -167,6 +183,8 @@
     gap: 16px;
     padding-bottom: clamp(16px, 3vw, 24px);
   }
+  .ktools__platforms { width: 100%; flex-basis: auto; }
+
   /* The strip's grid placement is inert here, but its align-self is not: in a
      column flex box the cross axis is horizontal, so `end` would throw the
      eyebrow to the right edge. */
@@ -217,4 +235,9 @@
 [data-theme='dark'] .ktools .flagship__feedback-pause:hover {
   background: rgba(255, 255, 255, 0.09);
   border-color: rgba(255, 122, 26, 0.45);
+}
+
+.ktools .flagship__device-screen.flagship__device-screen--screenshot {
+  height: auto;
+  aspect-ratio: 1343 / 549;
 }

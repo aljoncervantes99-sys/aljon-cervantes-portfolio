@@ -402,3 +402,348 @@
   .tgrid__client-role { font-size: 11.5px; }
   .tgrid__client-tag { font-size: 12px; }
 }
+
+/* ============================================
+   WHY WORK WITH ME? - four balanced feature items
+   Replaces the testimonials ledger on the same
+   glass sheet. Compact, responsive, icon-led.
+   ============================================ */
+
+.tgrid__features {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 1.6vw, 28px);
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.tgrid__feature {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(12px, 1.2vw, 18px);
+  padding: clamp(18px, 2vh, 26px) clamp(22px, 2vw, 30px);
+  min-height: 0;
+  border-radius: var(--radius-card);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(6, 12, 26, 0.04);
+  transition:
+    transform 220ms var(--ease-out),
+    box-shadow 220ms var(--ease-out),
+    border-color 220ms var(--ease-out);
+  cursor: default;
+}
+
+.tgrid__feature:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 8px 24px -8px rgba(6, 12, 26, 0.12);
+  border-color: var(--line-strong);
+}
+
+.tgrid__feature.is-active {
+  border-color: var(--orange);
+  box-shadow:
+    inset 0 0 0 1px var(--orange),
+    0 8px 24px -8px rgba(255, 122, 26, 0.10);
+}
+
+/* The oversized index, low-contrast and engraved. */
+.tgrid__feature-ghost {
+  position: absolute;
+  top: clamp(14px, 1.2vw, 20px);
+  right: clamp(14px, 1.2vw, 20px);
+  font-size: clamp(32px, 3vw, 48px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--navy);
+  opacity: 0.04;
+  pointer-events: none;
+  user-select: none;
+}
+[data-theme='dark'] .tgrid__feature-ghost { opacity: 0.06; }
+
+/* The icon mark, beside the heading. */
+.tgrid__feature-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: clamp(40px, 2.8vw, 48px);
+  height: clamp(40px, 2.8vw, 48px);
+  border-radius: 12px;
+  background: var(--brands-chip-bg, #F4F4ED);
+  border: 1px solid var(--brands-chip-border, var(--line));
+  color: var(--orange-ink);
+  margin-top: 2px;
+}
+
+/* The text body beside the icon. */
+.tgrid__feature-body {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 0.5vh, 8px);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.tgrid__feature-title {
+  font-size: clamp(15px, min(1.2vw, 2.2vh), 20px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  color: var(--navy);
+}
+
+.tgrid__feature-desc {
+  font-size: clamp(12px, min(0.9vw, 1.7vh), 15px);
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* Responsive: single column below 1100px. */
+@media (max-width: 1099px) {
+  .tgrid__glass {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 1.6vw, 28px);
+  }
+  .tgrid__features {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(12px, 1.4vw, 20px);
+  }
+  .tgrid__feature {
+    flex-direction: row;
+    align-items: center;
+    padding: clamp(16px, 2vh, 22px) clamp(20px, 2vw, 26px);
+  }
+  .tgrid__feature-body {
+    min-width: 0;
+  }
+  .tgrid__feature-ghost {
+    top: clamp(12px, 1vw, 16px);
+    right: clamp(12px, 1vw, 16px);
+    font-size: clamp(24px, 2.5vw, 36px);
+    opacity: 0.03;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tgrid__feature {
+    transition: none;
+  }
+  .tgrid__feature:hover {
+    transform: none;
+  }
+}
+
+/* ============================================
+   MY WORKING APPROACH - three step cards + CTA
+   Sits below the four feature cards on the same
+   glass sheet. Compact, premium, icon-led.
+   ============================================ */
+
+.tgrid__approach-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: clamp(20px, 2vh, 28px);
+  margin-bottom: clamp(18px, 1.8vw, 24px);
+}
+
+.tgrid__approach-eyebrow {
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--orange-ink);
+  margin: 0;
+}
+
+.tgrid__approach-title {
+  font-size: clamp(20px, min(1.6vw, 3vh), 28px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--navy);
+  margin: 0;
+}
+
+.tgrid__steps {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 1.6vw, 24px);
+  margin: 0 0 clamp(20px, 2vh, 28px);
+  padding-left: 0;
+  list-style: none;
+}
+
+.tgrid__step {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(10px, 1vw, 14px);
+  padding: clamp(16px, 2vh, 22px) clamp(20px, 2vw, 26px);
+  min-height: 0;
+  border-radius: var(--radius-card);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(6, 12, 26, 0.04);
+  transition:
+    transform 220ms var(--ease-out),
+    box-shadow 220ms var(--ease-out),
+    border-color 220ms var(--ease-out);
+  cursor: default;
+}
+
+.tgrid__step:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 8px 24px -8px rgba(6, 12, 26, 0.12);
+  border-color: var(--line-strong);
+}
+
+.tgrid__step-ghost {
+  position: absolute;
+  top: clamp(12px, 1vw, 16px);
+  right: clamp(12px, 1vw, 16px);
+  font-size: clamp(28px, 2.8vw, 40px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--navy);
+  opacity: 0.04;
+  pointer-events: none;
+  user-select: none;
+}
+[data-theme='dark'] .tgrid__step-ghost { opacity: 0.06; }
+
+.tgrid__step-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: clamp(36px, 2.5vw, 44px);
+  height: clamp(36px, 2.5vw, 44px);
+  border-radius: 12px;
+  background: var(--brands-chip-bg, #F4F4ED);
+  border: 1px solid var(--brands-chip-border, var(--line));
+  color: var(--orange-ink);
+  margin-top: 2px;
+}
+
+.tgrid__step-body {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3px, 0.5vh, 5px);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.tgrid__step-title {
+  font-size: clamp(14px, min(1.1vw, 2vh), 18px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  color: var(--navy);
+}
+
+.tgrid__step-desc {
+  font-size: clamp(11.5px, min(0.85vw, 1.5vh), 14px);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* CTA */
+.tgrid__cta {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1vw, 14px);
+  padding: clamp(20px, 2.5vh, 30px) clamp(22px, 2vw, 32px);
+  border-radius: var(--radius-card);
+  background: linear-gradient(135deg, var(--navy), #0F2A4C);
+  color: #fff;
+  box-shadow: 0 4px 12px -4px rgba(6, 12, 26, 0.15);
+}
+
+.tgrid__cta-text {
+  font-size: clamp(13px, min(1vw, 1.8vh), 16px);
+  line-height: 1.5;
+  color: #fff;
+  margin: 0;
+  opacity: 0.95;
+}
+
+.tgrid__cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: clamp(10px, 1.2vh, 14px) clamp(20px, 2vw, 28px);
+  font-size: clamp(13px, min(1vw, 1.8vh), 15px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+  background: var(--orange);
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+}
+
+.tgrid__cta-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -6px rgba(255, 122, 26, 0.35);
+}
+
+.tgrid__cta-button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 1099px) {
+  .tgrid__steps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(12px, 1.4vw, 18px);
+  }
+  .tgrid__step {
+    flex-direction: row;
+    align-items: center;
+    padding: clamp(14px, 2vh, 18px) clamp(18px, 2vw, 24px);
+  }
+  .tgrid__step-ghost {
+    top: clamp(10px, 1vw, 14px);
+    right: clamp(10px, 1vw, 14px);
+    font-size: clamp(20px, 2vw, 30px);
+    opacity: 0.03;
+  }
+  .tgrid__cta {
+    padding: clamp(16px, 2vh, 24px) clamp(20px, 2vw, 28px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tgrid__step {
+    transition: none;
+  }
+  .tgrid__step:hover {
+    transform: none;
+  }
+  .tgrid__cta-button {
+    transition: none;
+  }
+  .tgrid__cta-button:hover {
+    transform: none;
+  }
+}

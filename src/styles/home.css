@@ -1,9 +1,7 @@
 /* ============================================
-   HOME - the fixed viewport
-   Three bands in a grid of `auto auto 1fr`: the head, the tools marquee, and
-   the workflow. The workflow row is the elastic one, so a shorter viewport
-   shrinks the diagram instead of producing a scrollbar. Nothing here may add
-   height the panel cannot hold.
+   HOME - a scrollable overview
+   The header, tools carousel, and overview cards keep their natural height.
+   The shell scrolls this route when the content exceeds the viewport.
    ============================================ */
 .home {
   display: flex;
@@ -14,10 +12,11 @@
 
 @media (min-width: 1100px) {
   .home {
-    height: 100%;
+    height: auto;
+    min-height: 100%;
     display: grid;
-    grid-template-rows: auto auto 1fr;
-    min-height: 0;
+    grid-template-rows: auto auto auto;
+    align-content: start;
     /* Without this a nowrap child sets the grid's min-content width and the
        whole column - marquee and workflow included - is laid out wider than
        the panel and clipped. The panel must stay authoritative. */
@@ -42,9 +41,9 @@
   display: flex;
   flex-direction: column;
   font-size: clamp(30px, 3.5vw, 72px);
-  font-weight: 700;
-  letter-spacing: var(--ls-display);
-  line-height: 1.06;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.04;
   color: var(--navy);
 }
 .home__line { display: block; }
@@ -71,6 +70,8 @@
 }
 .home__cta svg { color: var(--orange); }
 .home__cta:hover { transform: translateY(-2px); }
+.home__cta:active { transform: translateY(0) scale(0.98); }
+.home__cta:focus-visible { outline-offset: 4px; }
 
 /* One line, from 1400px up.
    The sentence is 130 characters. Measured against the panel it needs roughly
@@ -87,24 +88,6 @@
   line-height: 1.6;
   color: var(--muted);
   text-wrap: pretty;
-}
-
-/* The marquee still carries the horizontal inset it needed as a full-bleed
-   band on the old long page. Home already supplies that padding, so drop it
-   and let the strip line up with the workflow window below it. */
-.home .tools-marquee { margin: 0; border-radius: 14px; border: 1px solid var(--line-strong); }
-/* Smaller on Home: the strip is a band under the head, not a section. */
-.home .tools-marquee__track { gap: 44px; padding: 14px 28px; }
-.home .tools-marquee__item { gap: 10px; padding-right: 44px; font-size: 13.5px; }
-.home .tools-marquee__item::after { height: 16px; }
-.home .tools-marquee__icon, .home .tools-marquee__img { width: 20px; height: 20px; }
-/* Phones: the 44px gaps left two logos on screen. Pack the strip. */
-@media (max-width: 640px) {
-  .home .tools-marquee__track { gap: 22px; padding: 10px 14px; }
-  .home .tools-marquee__item { gap: 8px; padding-right: 22px; font-size: 12px; }
-  .home .tools-marquee__icon, .home .tools-marquee__img { width: 18px; height: 18px; }
-  .home__glass { padding: 12px; border-radius: var(--radius-card); gap: 12px; }
-  .home__tools { gap: 8px; }
 }
 
 /* ---------- Glass panel ----------
@@ -135,7 +118,7 @@
   box-shadow:
     inset 0 0 0 1px var(--line),
     inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    0 30px 70px -40px rgba(6, 12, 26, 0.5);
+    0 20px 46px -34px rgba(6, 12, 26, 0.36);
 }
 [data-theme='dark'] .home__glass {
   background:
@@ -148,24 +131,34 @@
   box-shadow:
     inset 0 0 0 1px var(--line),
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 30px 70px -40px rgba(0, 0, 0, 0.8);
+    0 22px 48px -34px rgba(0, 0, 0, 0.62);
 }
 @media (min-width: 1100px) {
-  .home__glass--showcase { height: 100%; display: grid; grid-template-rows: minmax(0, 1fr); }
+  .home__glass--showcase {
+    width: min(100%, 960px);
+    height: auto;
+    justify-self: center;
+  }
 }
 
 /* ---------- Tools band ----------
-   The label is a title block on the left with the strip running beside it,
-   split by a hairline. A centred eyebrow floating above the strip read as a
-   caption; this reads as the band's name. */
+   Fixed-width category panels scroll as one carousel; none of their contents
+   are squeezed to make the groups fit the viewport. */
 .home__glass--tools { padding: clamp(10px, 1.4vh, 16px) clamp(12px, 1.2vw, 20px); }
 .home__tools {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: stretch;
+  gap: 12px;
   min-width: 0;
 }
-.home__tools-head { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.home__tools-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: none;
+}
 .home__tools-eyebrow {
   font-size: var(--fs-eyebrow);
   font-weight: 600;
@@ -174,29 +167,18 @@
   color: var(--orange-ink);
 }
 .home__tools-label {
-  font-size: clamp(15px, 1.15vw, 20px);
+  font-size: clamp(16px, 1.2vw, 22px);
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.15;
   color: var(--navy);
-  white-space: nowrap;
 }
-@media (min-width: 1100px) {
-  .home__tools {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: center;
-    gap: clamp(14px, 1.4vw, 24px);
-  }
-  .home__tools-head {
-    padding-right: clamp(14px, 1.4vw, 24px);
-    border-right: 1px solid var(--line-strong);
-  }
+@media (max-width: 640px) {
+  .home__glass { padding: 12px; border-radius: var(--radius-card); gap: 12px; }
+  .home__tools { gap: 8px; }
 }
 
-/* ---------- Showcase band ----------
-   `min-height: 0` is what lets the 1fr row actually shrink; without it the
-   grid floors at the reel's intrinsic height and the panel scrolls. */
+/* ---------- Overview cards ---------- */
 .home__showcase {
   min-height: 0;
   min-width: 0;
@@ -205,9 +187,6 @@
 }
 
 .home__showcase > .bento { min-height: 0; }
-@media (min-width: 1100px) {
-  .home__showcase > .bento { height: 100%; }
-}
 
 /* ---------- Autopilot in compact mode ----------
    The section chrome is Home's job here: no header, no section padding, and
@@ -284,4 +263,198 @@
   /* The floating pill is fixed at the top of the document down here, so the
      headline has to start below it or the first line reads through the navy. */
   .home { padding-top: 104px; }
+}
+
+/* Tools marquee lives in sections.css; Home arranges heading + strip here. */
+
+@media (min-width: 1100px) {
+  .home__glass--tools { padding: clamp(12px, 1.4vh, 16px) clamp(14px, 1.4vw, 22px); }
+  .home__tools {
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(14px, 1.6vw, 24px);
+  }
+  .home__tools-head {
+    min-width: 168px;
+    padding-right: clamp(12px, 1.2vw, 18px);
+    border-right: 1px solid var(--line);
+  }
+  .home__tools-label { white-space: nowrap; }
+}
+
+.home__showcase {
+  min-width: 0;
+  min-height: 0;
+}
+.home__showcase > .bento {
+  height: auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: none;
+  grid-auto-rows: minmax(min-content, auto);
+  gap: 12px;
+}
+.home .bento__card {
+  min-height: 0;
+  overflow: visible;
+  padding: 16px;
+}
+.home .bento__head { gap: 6px; }
+.home .bento__desc {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.home .bento__media {
+  flex: 0 0 auto;
+  min-height: 0;
+  margin-top: 8px;
+}
+.home .bento__card--projects,
+.home .bento__card--contact {
+  display: flex;
+  grid-column: auto;
+  flex-direction: column;
+}
+.home .bento__card--projects .bento__media {
+  flex: 0 0 auto;
+  min-height: 0;
+  height: auto;
+  margin-top: 8px;
+}
+.home .bento__card--projects .bento__reel {
+  height: auto;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+.home .bento__card--projects .bento__reel-track {
+  display: flex;
+  width: max-content;
+  height: auto;
+  flex-direction: row;
+  animation-name: bento-drift-left;
+  animation-duration: 26s;
+}
+.home .bento__card--projects .bento__shot {
+  width: clamp(120px, 10.5vw, 150px);
+  height: auto;
+}
+.home .bento__card--projects .bento__shot img {
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: contain;
+  object-position: center;
+  background: var(--white);
+}
+.home .bento__photo img {
+  object-fit: contain;
+  object-position: center;
+}
+.home .bento__card--about .bento__media {
+  flex: 0 0 88px;
+  min-height: 88px;
+  margin-top: 8px;
+}
+.home .bento__card--about .bento__photo {
+  width: auto;
+  height: min(100%, 86px);
+}
+.home .bento__card--ai .bento__media {
+  display: flex;
+  flex: 0 0 auto;
+  min-height: 0;
+  margin-top: 8px;
+}
+.home .bento__card--ai .bento__chips {
+  justify-content: flex-start;
+  overflow: visible;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+.home .bento__card--ai .bento__chip-row { overflow: visible; }
+.home .bento__card--ai .bento__chip-track {
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 6px;
+  animation: none;
+}
+.home .bento__card--ai .bento__chip:nth-child(n + 3) { display: none; }
+.home .bento__card--ai .bento__chip {
+  height: 28px;
+  padding: 0 9px;
+  font-size: 11px;
+}
+.home .bento__card--creds .bento__media {
+  flex: 0 0 auto;
+  min-height: 0;
+  margin-top: 8px;
+}
+.home .bento__card--creds .bento__badge-tag {
+  height: 23px;
+  padding: 0 9px;
+  font-size: 10px;
+}
+.home .bento__card--services .bento__media {
+  flex: 0 0 auto;
+  min-height: 130px;
+  margin-top: 6px;
+}
+.home .bento__offers {
+  overflow: visible;
+  container-type: normal;
+}
+.home .bento__offer {
+  flex: 0 0 26px;
+  min-height: 26px;
+  gap: 7px;
+}
+.home .bento__offer-tile {
+  width: 20px;
+  height: 20px;
+  border-radius: 7px;
+}
+.home .bento__offer-tile svg { width: 14px; height: 14px; }
+.home .bento__offer-text { line-height: 1.18; }
+.home .bento__offer-title {
+  overflow: visible;
+  font-size: 12px;
+  white-space: normal;
+}
+.home .bento__offer-note {
+  display: block;
+  overflow: visible;
+  font-size: 10px;
+  white-space: normal;
+}
+.home .bento__offer-num { font-size: 10px; }
+.home .bento__card--contact .bento__desc {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.home .bento__card--contact .bento__media {
+  display: flex;
+  flex: 0 0 auto;
+  height: auto;
+  min-height: 0;
+  margin-top: 8px;
+}
+.home .bento__card--contact .bento__reviews {
+  overflow: visible;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+.home .bento__card--contact .bento__review {
+  padding: 8px 10px;
+}
+
+@media (min-width: 1100px) {
+  .home__showcase > .bento {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(min-content, auto));
+  }
+}
+@media (min-width: 640px) and (max-width: 1099px) {
+  .home__showcase > .bento > .bento__card:nth-child(2n) { padding-right: 32px; }
+}
+@media (max-width: 639px) {
+  .home__showcase > .bento { grid-template-columns: minmax(0, 1fr); }
+  .home .bento__card { padding-right: 40px; }
 }

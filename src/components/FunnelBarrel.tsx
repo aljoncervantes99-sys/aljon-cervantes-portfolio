@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import type { Funnel } from '@/data/funnels'
+import type { GraphicDesign } from '@/data/graphics-design'
 
 /**
  * FunnelBarrel - the "dialect barrel gallery" technique.
  *
- * A WebGL drum of page-thumbnail cards (a spiral-template
+ * A WebGL drum of portfolio cards (a spiral-template
  * port). A wide/fat/short cylinder (COLS 16, RAD 11, camera z31)
  * inside a two-group tilt stack: the inner group spins, the outer tilt frames
  * the drum. A contained fade band crops it to ~2-3 rows so it never eats the
@@ -13,21 +14,27 @@ import type { Funnel } from '@/data/funnels'
  *
  * Adapted for the portfolio: contained in a section (not fullscreen), idle
  * auto-spin + slow vertical drift + pointer parallax + drag to explore, and
- * clicking a card opens the funnel in the existing modal via onOpen. A
- * visually-hidden button list keeps every page keyboard/SR accessible.
+ * clicking a card opens its preview via onOpen. A visually-hidden button list
+ * keeps every item keyboard/SR accessible.
  */
 
 type Props = {
-  funnels: Funnel[]
-  onOpen: (funnel: Funnel, trigger?: HTMLElement | null) => void
+  items: CarouselItem[]
+  onOpen: (item: CarouselItem, trigger?: HTMLElement | null) => void
 }
+
+export type CarouselItem = Funnel | GraphicDesign
 
 function thumbSrc(f: Funnel) {
   const dir = f.dir ?? 'funnels'
   return `/${dir}/thumbs/${f.file.replace('.html', '.jpeg')}`
 }
 
-export default function FunnelBarrel({ funnels, onOpen }: Props) {
+function imageSrc(item: CarouselItem) {
+  return 'imageSrc' in item ? item.imageSrc : thumbSrc(item)
+}
+
+export default function FunnelBarrel({ items, onOpen }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const labelRef = useRef<HTMLDivElement>(null)
@@ -37,7 +44,7 @@ export default function FunnelBarrel({ funnels, onOpen }: Props) {
 
   useEffect(() => {
     if (!canvasRef.current || !wrapRef.current || !labelRef.current) return
-    if (funnels.length === 0) return
+    if (items.length === 0) return
     const canvas = canvasRef.current
     const wrap = wrapRef.current
     const labelEl = labelRef.current
@@ -61,7 +68,7 @@ export default function FunnelBarrel({ funnels, onOpen }: Props) {
 
     // ---- barrel geometry: wide, fat, short drum ----
     const COLS = 16
-    const ROWS = Math.max(6, Math.ceil(funnels.length / COLS))
+    const ROWS = Math.max(6, Math.ceil(items.length / COLS))
     const RAD = 11
     const anglePer = (Math.PI * 2) / COLS
     const thetaLen = anglePer * 0.9
@@ -78,7 +85,21 @@ export default function FunnelBarrel({ funnels, onOpen }: Props) {
     function loadTex(url: string, matIndex: number) {
       const cached = texCache.get(url)
       if (cached) return cached
-      const t = loader.load(url, undefined, undefined, () => {
+      const t = loader.load(url, (texture) => {
+        const image = texture.image as { width?: number; height?: number } | undefined
+        if (!image?.width || !image.height) return
+
+        const imageAspect = image.width / image.height
+        const cardAspect = arcW / cardH
+        if (imageAspect > cardAspect) {
+          texture.repeat.x = cardAspect / imageAspect
+          texture.offset.x = (1 - texture.repeat.x) / 2
+        } else {
+          texture.repeat.y = imageAspect / cardAspect
+          texture.offset.y = (1 - texture.repeat.y) / 2
+        }
+        texture.needsUpdate = true
+      }, undefined, () => {
         // On failure, drop to a dark flat panel instead of a broken texture.
         const m = mats[matIndex]
         if (m) {
@@ -146,7 +167,7 @@ export default function FunnelBarrel({ funnels, onOpen }: Props) {
     scene.add(tilt)
 
     type CardData = {
-      funnel: Funnel
+      item: CarouselItem
       baseY: number
       baseAngle: number
       cur: number
@@ -154,7 +175,7 @@ export default function FunnelBarrel({ funnels, onOpen }: Props) {
     }
     const cards: THREE.Mesh[] = []
     const SLOTS = ROWS * COLS
-    const N = funnels.length
+    const N = items.length
     const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a)
     let stride = Math.max(1, Math.round(N / 3))
     while (N > 1 && gcd(stride, N) !== 1) stride++
@@ -164,7 +185,7 @@ export default function FunnelBarrel({ funnels, onOpen }: Props) {
     let counter = 0
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
-        const funnel = funnels[order[counter]]
+        const item = items[order[counter]]
         const material = new THREE.MeshBasicMaterial({
           side: THREE.FrontSide,
           transparent: true,
@@ -172,13 +193,13 @@ export default function FunnelBarrel({ funnels, onOpen }: Props) {
         })
         material.userData.base = 1
         mats[counter] = material
-        material.map = loadTex(thumbSrc(funnel), counter)
+        material.map = loadTex(imageSrc(item), counter)
         const mesh = new THREE.Mesh(sharedGeo, material)
         const baseAngle = c * anglePer + (r % 2 ? anglePer * 0.5 : 0) // brick offset
         mesh.rotation.y = baseAngle
         mesh.position.y = r * rowGap - TOWER_H / 2 + rowGap / 2
         mesh.userData = {
-          funnel,
+          item,
           baseY: mesh.position.y,
           baseAngle,
           cur: 0,
@@ -203,6 +224,7 @@ export default function FunnelBarrel({ funnels, onOpen }: Props) {
 
     const labCat = labelEl.querySelector('.funnels__barrel-label-cat') as HTMLElement
     const labTitle = labelEl.querySelector('.funnels__barrel-label-title') as HTMLElement
+    const labDesc = labelEl.querySelector('.funnels__barrel-label-desc') as HTMLElement
 
     function setPointerFromEvent(e: PointerEvent) {
       const rect = canvas.getBoundingClientRect()
@@ -262,7 +284,7 @@ export default function FunnelBarrel({ funnels, onOpen }: Props) {
           return mat.opacity > 0.08
         })
         const data = hit?.object.userData as CardData | undefined
-        if (data?.funnel) onOpenRef.current(data.funnel, canvas)
+        if (data?.item) onOpenRef.current(data.item, canvas)
       }
     }
 
@@ -346,8 +368,9 @@ export default function FunnelBarrel({ funnels, onOpen }: Props) {
           hovered = top
           if (hovered) {
             const data = hovered.userData as CardData
-            labCat.textContent = data.funnel.tag
-            labTitle.textContent = data.funnel.label
+            labCat.textContent = data.item.tag
+            labTitle.textContent = data.item.label
+            labDesc.textContent = data.item.desc
             labelEl.classList.add('is-on')
             canvas.style.cursor = 'pointer'
           } else {
@@ -404,7 +427,7 @@ export default function FunnelBarrel({ funnels, onOpen }: Props) {
       texCache.forEach((t) => t.dispose())
       renderer.dispose()
     }
-  }, [funnels])
+  }, [items])
 
   return (
     <div className="funnels__barrel" ref={wrapRef}>
@@ -412,17 +435,18 @@ export default function FunnelBarrel({ funnels, onOpen }: Props) {
       <div className="funnels__barrel-label" ref={labelRef} aria-hidden="true">
         <span className="funnels__barrel-label-cat" />
         <span className="funnels__barrel-label-title" />
+        <span className="funnels__barrel-label-desc" />
       </div>
       <span className="funnels__barrel-hint" aria-hidden="true">
-        Drag to spin &middot; click a page to open
+        Drag to spin &middot; click a card to preview
       </span>
 
-      {/* Accessible fallback: every page reachable by keyboard / screen reader. */}
+      {/* Accessible fallback: every item reachable by keyboard / screen reader. */}
       <ul className="funnels__barrel-a11y sr-only">
-        {funnels.map((f) => (
-          <li key={f.file}>
-            <button type="button" onClick={(e) => onOpen(f, e.currentTarget)}>
-              Open {f.label} ({f.tag})
+        {items.map((item) => (
+          <li key={'id' in item ? item.id : item.file}>
+            <button type="button" onClick={(e) => onOpen(item, e.currentTarget)}>
+              Open {item.label} ({item.tag}): {item.desc}
             </button>
           </li>
         ))}

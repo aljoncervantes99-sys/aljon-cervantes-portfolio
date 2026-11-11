@@ -374,100 +374,110 @@
 /* ==========================================================================
    TOOLS MARQUEE
    ==========================================================================
-   Contained white bar under the hero. Horizontal margin keeps the bar off
-   the viewport edges so it reads as a floating element instead of a full
-   edge-to-edge band. Subtle rounded corners + hairline border + soft shadow
-   give it a floating card feel. */
+   Home's daily-drivers strip: a light rounded container with a continuously
+   scrolling row of real brand marks and labels. Used inside .home__tools. */
 .tools-marquee {
   position: relative;
-  margin: 0 clamp(24px, 6vw, 96px);
-  padding: 0;
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
+  border: 1px solid rgba(11, 30, 63, 0.08);
+  border-radius: 14px;
   background: var(--white);
-  border-radius: 18px;
-  border: 1px solid rgba(11, 30, 63, 0.06);
   box-shadow:
-    0 30px 70px -40px rgba(11, 30, 63, 0.22),
-    0 4px 20px -10px rgba(11, 30, 63, 0.08);
+    0 20px 40px -28px rgba(11, 30, 63, 0.22),
+    0 4px 14px -10px rgba(11, 30, 63, 0.08);
 }
+.tools-marquee__viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+}
+.tools-marquee__viewport::-webkit-scrollbar { display: none; }
 
 .tools-marquee__track {
   display: flex;
   align-items: center;
-  gap: 72px;
   width: max-content;
-  padding: 28px 40px;
-  /* Seamless loop: list is doubled in JSX, -50% lands on the seam. */
-  animation: marquee 80s linear infinite;
+  padding: 12px 0;
+  /* Seamless loop: two identical groups in JSX, -50% lands on the seam. */
+  animation: tools-marquee-scroll 42s linear infinite;
   will-change: transform;
 }
-.tools-marquee:hover .tools-marquee__track {
-  /* Pause-on-hover lets visitors actually read the list without dark-patterning
-     them into a moving target. Standard portfolio affordance. */
-  animation-play-state: paused;
+@media (hover: hover) and (pointer: fine) {
+  .tools-marquee:hover .tools-marquee__track,
+  .tools-marquee:focus-within .tools-marquee__track {
+    animation-play-state: paused;
+  }
 }
 
+.tools-marquee__group {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 0;
+  margin: 0;
+  padding: 0 12px;
+  list-style: none;
+}
 .tools-marquee__item {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
-  flex-shrink: 0;
-  position: relative;
-  padding-right: 72px;
+  flex: none;
+  gap: 10px;
+  padding: 0 22px;
   color: var(--navy);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.005em;
+  line-height: 1;
   white-space: nowrap;
 }
-.tools-marquee__item::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1px;
-  height: 22px;
-  background: rgba(11, 30, 63, 0.1);
+.tools-marquee__item + .tools-marquee__item {
+  border-left: 1px solid rgba(11, 30, 63, 0.12);
 }
-.tools-marquee__item:last-child::after {
-  display: none;
+.tools-marquee__logo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 5px;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(11, 30, 63, 0.08);
 }
-
-.tools-marquee__icon {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-  /* Single-color simple-icons SVGs tinted via --brand-color + mask. The SVG
-     file acts as the silhouette; background-color does the tint. */
-  background: var(--brand-color, var(--navy));
-  -webkit-mask: var(--icon-url) center / contain no-repeat;
-          mask: var(--icon-url) center / contain no-repeat;
-}
-
-.tools-marquee__img {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
+.tools-marquee__logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  /* Multi-color brand PNGs render as-is with their native colors preserved. */
 }
+.tools-marquee__label { color: var(--navy); }
 
-.tools-marquee__label {
-  color: var(--navy);
-}
-
-@keyframes marquee {
-  0%   { transform: translate(0); }
-  100% { transform: translate(-50%); }
+@keyframes tools-marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tools-marquee__track {
-    animation: none;
+  .tools-marquee__track { animation: none; }
+  .tools-marquee__viewport {
+    mask-image: none;
+    -webkit-mask-image: none;
   }
+}
+@media (max-width: 639px) {
+  .tools-marquee__item {
+    gap: 8px;
+    padding: 0 16px;
+    font-size: 13px;
+  }
+  .tools-marquee__logo { width: 30px; height: 30px; }
 }
 
 /* ==========================================================================
@@ -1402,6 +1412,56 @@
   display: block;
 }
 
+.funnels__modal--design .funnels__modal-shell {
+  background: #080d17;
+}
+
+.graphics-preview {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+  align-items: center;
+  gap: clamp(24px, 5vw, 72px);
+  padding: clamp(24px, 5vw, 72px);
+  color: #f4f4ed;
+}
+
+.graphics-preview__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  object-position: center;
+}
+
+.graphics-preview__copy {
+  max-width: 42ch;
+}
+
+.graphics-preview__tag {
+  color: #ff9a52;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.graphics-preview__title {
+  margin: 10px 0 12px;
+  color: inherit;
+  font-size: clamp(22px, 3vw, 40px);
+  line-height: 1.15;
+}
+
+.graphics-preview__desc {
+  margin: 0;
+  color: rgba(244, 244, 237, 0.72);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
 @media (max-width: 720px) {
   .funnels__modal-url {
     font-size: 11px;
@@ -1409,6 +1469,35 @@
   }
   .funnels__modal-url-scheme {
     display: none;
+  }
+
+  .graphics-preview {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: start;
+    gap: 18px;
+    padding: 18px;
+    overflow-y: auto;
+  }
+
+  .graphics-preview__image {
+    width: auto;
+    height: min(56vh, 440px);
+    max-width: 100%;
+    justify-self: center;
+  }
+
+  .graphics-preview__copy {
+    max-width: none;
+  }
+
+  .graphics-preview__title {
+    margin: 6px 0 8px;
+    font-size: 22px;
+  }
+
+  .graphics-preview__desc {
+    font-size: 13px;
   }
 }
 
@@ -3051,17 +3140,9 @@
   .contact-strip {
     padding: 80px 24px;
   }
-  .tools-marquee {
-    padding: 0;
-  }
-  .tools-marquee__track {
-    gap: 44px;
-    padding: 22px 24px;
-  }
   .tools-marquee__item {
-    padding-right: 44px;
-    font-size: 14px;
-    gap: 10px;
+    padding: 0 16px;
+    font-size: 13px;
   }
   .funnels {
     padding: clamp(96px, 12vh, 120px) 24px 80px;

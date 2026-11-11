@@ -90,3 +90,16 @@ export function DeviceIcon({ size = 22 }: IconProps) {
     </svg>
   )
 }
+
+/** Logistics: a delivery truck in the same animated line style as the cards. */
+export function LogisticsIcon({ size = 22 }: IconProps) {
+  return (
+    <svg className="picon" width={size} height={size} {...base}>
+      <path d="M3 6h11v11H3z" />
+      <path d="M14 10h4l3 3v4h-7z" />
+      <circle className="picon__wheel" cx="7.5" cy="18" r="2" />
+      <circle className="picon__wheel" cx="17.5" cy="18" r="2" />
+      <path d="M17 10v3h4" />
+    </svg>
+  )
+}

@@ -43,8 +43,8 @@ import type { Icon } from '@/components/slab'
 
 /**
  * Flagship - "Main build" callout. Used at the bottom of Projects and as the
- * body of the /showcase page. Showcases one product via a 5-tab carousel and
- * a horizontal marquee of user feedback.
+ * body of the /showcase page. Supports the illustrative product carousel and
+ * a screenshot-based project presentation.
  *
  * Architecture:
  *   - Tabs control the carousel slide. Click to switch instantly.
@@ -730,9 +730,22 @@ type FlagshipProps = {
   /** Overrides the eyebrow. Projects numbers its sections; the Services
    *  page does not, so it passes its own label. */
   eyebrow?: string
+  title?: string
+  description?: string
+  buttonLabel?: string
+  buttonHref?: string
+  /** Replaces the illustrative app mock with a real product screenshot. */
+  screenshot?: { src: string; alt: string; host: string; path: string }
 }
 
-export default function Flagship({ eyebrow = '12 / Flagship build' }: FlagshipProps = {}) {
+export default function Flagship({
+  eyebrow = '12 / Flagship build',
+  title = 'Product Name',
+  description = 'PLACEHOLDER - tell me what to put here: two to four sentences on your flagship product - who it is for, the main things it does, and one detail on how you built or run it (stack, hosting, how many people use it).',
+  buttonLabel = 'Open product',
+  buttonHref = '#',
+  screenshot,
+}: FlagshipProps = {}) {
   const [active, setActive] = useState(0)
   const [paused, setPaused] = useState(false)
   const [inView, setInView] = useState(true)
@@ -756,12 +769,12 @@ export default function Flagship({ eyebrow = '12 / Flagship build' }: FlagshipPr
   }, [])
 
   useEffect(() => {
-    if (paused || !inView) return
+    if (screenshot || paused || !inView) return
     const id = window.setInterval(() => {
       setActive((i) => (i + 1) % TABS.length)
     }, AUTO_ADVANCE_MS)
     return () => window.clearInterval(id)
-  }, [paused, inView])
+  }, [paused, inView, screenshot])
 
   const onTabKey = useCallback(
     (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -783,19 +796,15 @@ export default function Flagship({ eyebrow = '12 / Flagship build' }: FlagshipPr
   const Mock = MOCKS[current.id]
 
   return (
-    <aside className="flagship" aria-labelledby="flagship-heading" ref={ref}>
+    <aside className={`flagship${screenshot ? ' flagship--screenshot' : ''}`} aria-labelledby="flagship-heading" ref={ref}>
       <header className="flagship__header">
         <span className="flagship__eyebrow">{eyebrow}</span>
         <h3 className="flagship__title" id="flagship-heading">
-          Product Name
+          {title}
         </h3>
-        <p className="flagship__desc">
-          PLACEHOLDER - tell me what to put here: two to four sentences on your flagship
-          product - who it is for, the main things it does, and one detail on how you
-          built or run it (stack, hosting, how many people use it).
-        </p>
-        <a className="flagship__cta" href="#">
-          Open product
+        <p className="flagship__desc">{description}</p>
+        <a className="flagship__cta" href={buttonHref}>
+          {buttonLabel}
           <ArrowSquareOut weight="bold" size={16} aria-hidden="true" />
         </a>
       </header>
@@ -807,28 +816,32 @@ export default function Flagship({ eyebrow = '12 / Flagship build' }: FlagshipPr
         onFocus={() => setPaused(true)}
         onBlur={() => setPaused(false)}
       >
-        <div className="flagship__device" aria-hidden="true">
+        <div className="flagship__device" aria-hidden={screenshot ? undefined : true}>
           <div className="flagship__device-bar">
             <span className="flagship__dot flagship__dot--red" />
             <span className="flagship__dot flagship__dot--amber" />
             <span className="flagship__dot flagship__dot--green" />
             <span className="flagship__device-url">
-              <span className="flagship__device-url-host">example.com</span>
-              <span className="flagship__device-url-path">{current.path}</span>
+              <span className="flagship__device-url-host">{screenshot?.host ?? 'example.com'}</span>
+              <span className="flagship__device-url-path">{screenshot?.path ?? current.path}</span>
             </span>
           </div>
-          <div className="flagship__device-screen">
+          <div className={`flagship__device-screen${screenshot ? ' flagship__device-screen--screenshot' : ''}`}>
             {/* Re-keyed on tab change so the stage remounts and replays the
                 staggered entrance instead of swapping content in place. */}
-            <div className="flagship__stage" key={current.id}>
-              <Shell tab={current}>
-                <Mock />
-              </Shell>
+            <div className={`flagship__stage${screenshot ? ' flagship__stage--screenshot' : ''}`} key={screenshot ? screenshot.src : current.id}>
+              {screenshot ? (
+                <img className="flagship__screenshot" src={screenshot.src} alt={screenshot.alt} />
+              ) : (
+                <Shell tab={current}>
+                  <Mock />
+                </Shell>
+              )}
             </div>
           </div>
         </div>
 
-        <div className="flagship__panel">
+        {!screenshot && <div className="flagship__panel">
           <div className="flagship__tabs" role="tablist" aria-label="Product screens">
             {TABS.map((tab, i) => {
               const TabIcon = tab.Icon
@@ -863,10 +876,10 @@ export default function Flagship({ eyebrow = '12 / Flagship build' }: FlagshipPr
               />
             ))}
           </div>
-        </div>
+        </div>}
       </div>
 
-      <div className="flagship__feedback" aria-labelledby="flagship-feedback-heading">
+      {!screenshot && <div className="flagship__feedback" aria-labelledby="flagship-feedback-heading">
         <header className="flagship__feedback-header">
           <span className="flagship__feedback-eyebrow">What people say about it</span>
           <h4 className="flagship__feedback-title" id="flagship-feedback-heading">
@@ -938,7 +951,7 @@ export default function Flagship({ eyebrow = '12 / Flagship build' }: FlagshipPr
             ))}
           </div>
         </div>
-      </div>
+      </div>}
     </aside>
   )
 }

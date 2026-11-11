@@ -244,7 +244,6 @@ html.is-intro .nav,
 html.is-intro .hprofile,
 html.is-intro .hstats,
 html.is-intro .hsec,
-html.is-intro .htiles,
 html.is-intro .hproof,
 html.is-intro .tabbar {
   opacity: 0;
@@ -260,7 +259,6 @@ html.is-intro .tabbar { transform: translateY(24px); }
 .hprofile,
 .hstats,
 .hsec,
-.htiles,
 .hproof,
 .tabbar {
   transition:
@@ -270,7 +268,7 @@ html.is-intro .tabbar { transform: translateY(24px); }
 .home__lede { transition-delay: 60ms; }
 .home__glass { transition-delay: 150ms; }
 .hstats { transition-delay: 100ms; }
-.hsec, .htiles, .hproof { transition-delay: 220ms; }
+.hsec, .hproof { transition-delay: 220ms; }
 .tabbar { transition-delay: 260ms; }
 
 /* The rail column assembles itself rather than fading in as a slab: each row
@@ -307,7 +305,6 @@ html.is-intro .rail__inner > * {
     html.is-intro .hprofile,
   html.is-intro .hstats,
   html.is-intro .hsec,
-  html.is-intro .htiles,
   html.is-intro .hproof,
   html.is-intro .tabbar,
   html.is-intro .rail__inner > * {

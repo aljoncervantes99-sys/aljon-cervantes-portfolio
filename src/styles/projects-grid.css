@@ -42,9 +42,8 @@
 }
 
 /* ---------- The glass and the cards ----------
-   Home's glass panel and bento, re-used as-is. The cards are buttons here,
-   so the link styling gets a button reset; the two wide cards keep their
-   head on the left and the track on the right the way Home's do. */
+   Home's glass panel and bento, re-used as-is. Featured cards are direct links
+   to their dedicated case studies; remaining cards retain their dialog action. */
 .pgrid__glass { position: relative; min-height: 0; }
 
 /* The hint. Centred on the sheet's top edge, half in and half out, like a
@@ -87,9 +86,41 @@
 }
 .bento__card--btn .bento__head { text-align: left; }
 .bento__card--btn .bento__title, .bento__card--btn .bento__desc { display: block; }
+.bento__project-category {
+  color: var(--orange-ink);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.045em;
+  line-height: 1.5;
+}
+.bento__card--featured { min-height: 260px; }
+.bento__card--featured .bento__desc { line-height: 1.55; }
+.bento__project-link {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 7px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 600;
+  transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), gap var(--dur-fast) var(--ease-out);
+}
+.bento__project-link svg { color: var(--orange-ink); transition: transform var(--dur-fast) var(--ease-out); }
+.bento__card--featured:hover .bento__project-link {
+  gap: 10px;
+  border-color: var(--orange);
+  background: color-mix(in srgb, var(--orange) 9%, var(--paper));
+}
+.bento__card--featured:hover .bento__project-link svg { transform: translate(1px, -1px); }
 @media (min-width: 1100px) {
   .bento__card--wide { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 14px; }
   .bento__card--wide .bento__media { margin-top: 0; grid-row: 1; grid-column: 2; }
+  .bento__card--featured.bento__card--wide { grid-template-rows: 1fr auto; }
+  .bento__card--featured.bento__card--wide .bento__project-link { grid-column: 1; grid-row: 2; }
 }
 @media (max-width: 1099px) {
   .bento__card--wide { display: flex; flex-direction: column; }
@@ -145,6 +176,54 @@
 .bento__doc-flow i.is-on { background: var(--orange); border-color: var(--orange); color: #fff; }
 .bento__doc-line { height: 6px; border-radius: 3px; background: var(--tint-strong); }
 .bento__doc-line--short { width: 60%; }
+.bento__doc--ecommerce { justify-content: center; }
+.bento__ecommerce-heading { display: flex; align-items: center; gap: 10px; }
+.bento__ecommerce-heading > img {
+  width: 34px;
+  height: 34px;
+  padding: 6px;
+  flex: none;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.bento__ecommerce-heading > span { display: flex; min-width: 0; flex-direction: column; gap: 4px; }
+.bento__ecommerce-heading .bento__doc-title { font-size: clamp(13px, 0.9vw, 15px); }
+.bento__doc--ecommerce .bento__doc-flow { flex-wrap: wrap; }
+.bento__doc--ecommerce .bento__doc-flow i { font-size: 9px; }
+.bento__ecommerce-tools { color: var(--muted); font-size: 9px; line-height: 1.4; }
+
+.bento__logistics-preview {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+}
+.bento__logistics-preview-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 5px;
+  color: var(--orange-ink);
+}
+.bento__logistics-preview-head > span { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
+.bento__logistics-preview-label { color: var(--muted); font-size: 8px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.bento__logistics-preview-head strong { color: var(--navy); font-size: 11px; }
+.bento__logistics-preview-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  padding-top: 5px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 8.5px;
+  line-height: 1.3;
+}
+.bento__logistics-preview-row span:first-child { color: var(--navy); font-weight: 600; }
 
 /* The flagship stack: one grid cell, three cards of the Open Builds anatomy
    stacked inside it, no card around them. Each opens its own pop-up. */
@@ -244,6 +323,71 @@
 
 .pcard__btn:hover .picon__glyph { transform: translateY(-1.5px) scale(1.15); }
 .pcard__btn:hover .picon__home { transform: scale(1.6); }
+.bento__card--btn:hover .picon__wheel { transform: translateY(1px); }
+
+.logistics-dashboard {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: clamp(20px, 4vw, 48px);
+  color: var(--navy);
+}
+.logistics-dashboard__head { max-width: 720px; margin-bottom: 26px; }
+.logistics-dashboard__eyebrow {
+  color: var(--orange-ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.logistics-dashboard__head h1 { margin-top: 8px; font-size: clamp(24px, 4vw, 40px); line-height: 1.12; }
+.logistics-dashboard__head p { margin-top: 12px; color: var(--muted); line-height: 1.6; }
+.logistics-dashboard__board {
+  padding: clamp(16px, 2.5vw, 26px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--paper);
+  box-shadow: 0 16px 36px -28px rgba(6, 12, 26, 0.4);
+}
+.logistics-dashboard__board-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.logistics-dashboard__board-head h2, .logistics-dashboard__details h2 { margin-top: 5px; font-size: clamp(16px, 2vw, 21px); }
+.logistics-dashboard__sample {
+  flex: none;
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 122, 26, 0.12);
+  color: var(--orange-ink);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.logistics-dashboard__orders { display: grid; gap: 8px; margin-top: 18px; }
+.logistics-dashboard__order {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+}
+.logistics-dashboard__order > span:first-child { display: flex; flex-direction: column; gap: 3px; }
+.logistics-dashboard__order strong { font-size: 12px; }
+.logistics-dashboard__order small { color: var(--muted); font-size: 11px; }
+.logistics-dashboard__status { color: #32835A; font-size: 11px; font-weight: 600; text-align: right; }
+.logistics-dashboard__status--moving { color: #436CBB; }
+.logistics-dashboard__status--review { color: var(--orange-ink); }
+.logistics-dashboard__details { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; margin-top: 24px; }
+.logistics-dashboard__details ul { display: grid; gap: 8px; margin-top: 12px; padding: 0; list-style: none; }
+.logistics-dashboard__details li { color: var(--muted); font-size: 13px; line-height: 1.45; }
+.logistics-dashboard__details > div:first-child li::before { content: '✓'; margin-right: 8px; color: var(--orange-ink); font-weight: 700; }
+.logistics-dashboard__tags { display: flex !important; flex-wrap: wrap; align-content: flex-start; }
+.logistics-dashboard__tags li { padding: 6px 9px; border: 1px solid var(--line); border-radius: var(--radius-pill); background: var(--white); font-size: 11px; }
+@media (max-width: 639px) {
+  .logistics-dashboard__details { grid-template-columns: minmax(0, 1fr); }
+  .logistics-dashboard__order { align-items: flex-start; flex-direction: column; }
+  .logistics-dashboard__status { text-align: left; }
+}
 
 /* ---------- The dialog ----------
    A dark backdrop (no backdrop-filter: it re-blurred the animating shader
@@ -301,12 +445,9 @@
 
 /* Automations: only the strip, floating on the backdrop, full width. */
 .ppanel--strip { justify-content: center; }
-.ppanel--strip .wfs__caption { display: none; }
 .ppanel--strip .wfs { padding: 0; width: 100%; }
 .ppanel--strip [data-reveal] { opacity: 1 !important; transform: none !important; }
-.ppanel--strip .wfs__frame { pointer-events: none; width: clamp(520px, 46vw, 820px); }
-.ppanel--strip .wfs__strip:hover .wfs__track { animation-play-state: running; }
-.ppanel--strip .wfs__strip { mask-image: none; -webkit-mask-image: none; }
+.ppanel--strip .wfs__project { width: min(1120px, 100%); }
 
 /* The barrel: bare on the backdrop, filling the stage. */
 .ppanel--barrel { justify-content: center; }

@@ -1,8 +1,8 @@
-import { useState, type FormEvent } from 'react'
-import { PaperPlaneTilt, CheckCircle, WarningCircle, EnvelopeSimple, ArrowUpRight, CaretDown } from '@/components/slab'
+import { useRef, useState, type FormEvent } from 'react'
+import { PaperPlaneTilt, CheckCircle, WarningCircle, EnvelopeSimple, ArrowUpRight, CaretDown, FilePdf, type Icon } from '@/components/slab'
 import { FAQS } from '@/data/faqs'
 import { profile } from '@/data/profile'
-import { readLead, submitLead, SubmitError, MAX_NAME, MAX_EMAIL, MAX_MESSAGE, type SubmitResult } from '@/lib/contact'
+import { readLead, submitLead, SubmitError, MAX_NAME, MAX_COMPANY_NAME, MAX_EMAIL, MAX_MESSAGE } from '@/lib/contact'
 
 /**
  * ContactGrid - the Contact view as a fixed viewport.
@@ -12,22 +12,44 @@ import { readLead, submitLead, SubmitError, MAX_NAME, MAX_EMAIL, MAX_MESSAGE, ty
  * the form itself on the right. Sized to the panel, so
  * nothing here scrolls; the message box takes whatever height is left.
  *
- * Submission goes through lib/contact.ts, which is the one place a form
- * backend gets wired. Until it is, the same call opens the visitor's mail
- * client with the message laid out, and the success copy says so.
+ * Submission goes through lib/contact.ts. A success state is shown only when
+ * the configured backend accepts the submission.
  */
 
-type Status = { kind: 'idle' } | { kind: 'sending' } | { kind: 'error'; note: string } | { kind: 'sent'; via: SubmitResult['via'] }
+type Status = { kind: 'idle' } | { kind: 'sending' } | { kind: 'error'; note: string } | { kind: 'sent' }
 
-/* The plane takes this long to leave the button. The sent state waits for it
-   even when the submit itself is instant, so the send is something you see
-   happen rather than a panel that blinks. */
-const FLIGHT_MS = 650
-
-const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
+const CONTACT_LINKS: {
+  label: string
+  href: string
+  title: string
+  iconPath?: string
+  Icon?: Icon
+  brand?: string
+}[] = [
+  ...profile.socials.map((social) => ({
+    label: social.label,
+    href: social.href,
+    title: social.label,
+    iconPath: social.iconPath,
+  })),
+  {
+    label: 'Upwork profile',
+    href: profile.upworkProfileUrl,
+    title: profile.upworkProfileUrl ? 'Visit Upwork profile' : 'Set the Upwork URL in src/data/profile.ts',
+    iconPath: '/icons/upwork.svg',
+    brand: 'upwork',
+  },
+  {
+    label: 'Resume PDF',
+    href: '/Aljon_Cervantes_Resume.pdf',
+    title: 'Open resume PDF in a new tab',
+    Icon: FilePdf,
+  },
+]
 
 export default function ContactGrid() {
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
+  const submitting = useRef(false)
   // Bumped on every failed submit so the shake replays even if the same
   // error is already showing.
   const [shake, setShake] = useState(0)
@@ -36,18 +58,26 @@ export default function ContactGrid() {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const lead = readLead(new FormData(e.currentTarget))
+    if (submitting.current) return
+
+    const form = e.currentTarget
+    if (!form.reportValidity()) return
+
+    const lead = readLead(new FormData(form))
     if (!lead) {
-      setStatus({ kind: 'error', note: 'Add your name, a real email, and a short note.' })
+      setStatus({ kind: 'error', note: 'Please complete the required fields with a valid email address.' })
       setShake((n) => n + 1)
       return
     }
+
+    submitting.current = true
     setStatus({ kind: 'sending' })
     try {
-      const [result] = await Promise.all([submitLead(lead), wait(FLIGHT_MS)])
-      setStatus({ kind: 'sent', via: result.via })
+      await submitLead(lead)
+      setStatus({ kind: 'sent' })
     } catch (err) {
-      const note = err instanceof SubmitError ? err.message : 'That did not go through. Email me directly instead.'
+      submitting.current = false
+      const note = err instanceof SubmitError ? err.message : 'Your inquiry could not be submitted. Please email me directly.'
       setStatus({ kind: 'error', note })
       setShake((n) => n + 1)
     }
@@ -60,10 +90,10 @@ export default function ContactGrid() {
       <header className="pgrid__head">
         <span className="pgrid__eyebrow">FAQs / Contact</span>
         <h1 className="pgrid__title" id="contact-title">
-          Your contact headline goes here.
+          Let&apos;s Work Together
         </h1>
         <p className="pgrid__lede">
-          PLACEHOLDER - tell me what to put here: one or two lines inviting people to write and saying what they get back.
+          Have a project in mind? Tell me what you need, and let&apos;s discuss how I can help.
         </p>
       </header>
 
@@ -75,7 +105,7 @@ export default function ContactGrid() {
             <h2 className="cgrid__aside-title" id="contact-faq">
               Quick answers.
               <br />
-              <span>Still have one? Write below.</span>
+              <span>Let&apos;s make working together simple.</span>
             </h2>
           </div>
 
@@ -109,11 +139,34 @@ export default function ContactGrid() {
               <span>{profile.email}</span>
             </a>
             <ul className="cgrid__socials" role="list">
-              {profile.socials.map((s) => (
-                <li key={s.label}>
-                  <a className="cgrid__social" href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}>
-                    <img src={s.iconPath} alt="" loading="lazy" decoding="async" />
-                  </a>
+              {CONTACT_LINKS.map(({ label, href, title, iconPath, Icon, brand }) => (
+                <li key={label}>
+                  {href ? (
+                    <a
+                      className={`cgrid__social${brand ? ` cgrid__social--${brand}` : ''}`}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      title={title}
+                    >
+                      {Icon ? (
+                        <Icon size={18} aria-hidden="true" />
+                      ) : iconPath ? (
+                        <img src={iconPath} alt="" loading="lazy" decoding="async" />
+                      ) : null}
+                    </a>
+                  ) : (
+                    <button
+                      className={`cgrid__social cgrid__social--disabled${brand ? ` cgrid__social--${brand}` : ''}`}
+                      type="button"
+                      disabled
+                      aria-label={label}
+                      title={title}
+                    >
+                      {iconPath && <img src={iconPath} alt="" loading="lazy" decoding="async" />}
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -128,19 +181,31 @@ export default function ContactGrid() {
                 <CheckCircle size={30} weight="fill" />
               </span>
               <h2 className="cgrid__done-title">
-                {status.via === 'webhook' ? 'Got it.' : 'Your mail app has it.'}
+                Your inquiry was submitted.
               </h2>
               <p className="cgrid__done-body">
-                {status.via === 'webhook'
-                  ? 'It is in my inbox and on my phone. You will hear back within one business day.'
-                  : 'The message is laid out and addressed. Press send there and you will hear back within one business day.'}
+                Thank you for getting in touch. Your message was accepted by the contact form.
               </p>
-              <button type="button" className="cgrid__again" onClick={() => setStatus({ kind: 'idle' })}>
+              <button
+                type="button"
+                className="cgrid__again"
+                onClick={() => {
+                  submitting.current = false
+                  setStatus({ kind: 'idle' })
+                }}
+              >
                 Write another
               </button>
             </div>
           ) : (
-            <form className={`cgrid__form${busy ? ' is-sending' : ''}`} onSubmit={onSubmit} noValidate>
+            <form className={`cgrid__form${busy ? ' is-sending' : ''}`} onSubmit={onSubmit} aria-busy={busy}>
+              <header className="cgrid__form-head">
+                <h2 className="cgrid__form-title">Let&apos;s Work Together</h2>
+                <p className="cgrid__form-description">
+                  Have a project in mind? Tell me what you need, and let&apos;s discuss how I can help.
+                </p>
+                <p className="cgrid__required-note"><span aria-hidden="true">*</span> Required fields</p>
+              </header>
               {/* Honeypot. Hidden from people and assistive tech; a script that
                   fills every field trips it and the backend can drop the
                   post. autoComplete off so a browser never fills it either. */}
@@ -154,27 +219,45 @@ export default function ContactGrid() {
               />
               <div className="cgrid__row">
                 <label className="cgrid__field">
-                  <span className="cgrid__label">First name</span>
+                  <span className="cgrid__label">First Name <span aria-hidden="true">*</span><span className="sr-only"> (required)</span></span>
                   <input type="text" name="firstName" autoComplete="given-name" required maxLength={MAX_NAME} placeholder="First name" />
                 </label>
                 <label className="cgrid__field">
-                  <span className="cgrid__label">Last name</span>
+                  <span className="cgrid__label">Last Name <span aria-hidden="true">*</span><span className="sr-only"> (required)</span></span>
                   <input type="text" name="lastName" autoComplete="family-name" required maxLength={MAX_NAME} placeholder="Last name" />
                 </label>
               </div>
 
-              <label className="cgrid__field">
-                <span className="cgrid__label">Email</span>
-                <input type="email" name="email" autoComplete="email" required maxLength={MAX_EMAIL} placeholder="you@yourbusiness.com" />
-              </label>
+              <div className="cgrid__row">
+                <label className="cgrid__field">
+                  <span className="cgrid__label">Email Address <span aria-hidden="true">*</span><span className="sr-only"> (required)</span></span>
+                  <input type="email" name="email" autoComplete="email" required maxLength={MAX_EMAIL} placeholder="you@yourbusiness.com" />
+                </label>
+                <label className="cgrid__field">
+                  <span className="cgrid__label">Company or Business Name</span>
+                  <input type="text" name="companyName" autoComplete="organization" maxLength={MAX_COMPANY_NAME} placeholder="Your business (optional)" />
+                </label>
+              </div>
 
+              <label className="cgrid__field">
+                <span className="cgrid__label">Service Interested In <span aria-hidden="true">*</span><span className="sr-only"> (required)</span></span>
+                <select name="service" required defaultValue="">
+                  <option value="" disabled>Select a service</option>
+                  <option>Ecommerce VA</option>
+                  <option>Shopify Store Management</option>
+                  <option>Web Development</option>
+                  <option>Graphics Design</option>
+                  <option>Logistics &amp; Supply Chain VA</option>
+                  <option>Other</option>
+                </select>
+              </label>
               <label className="cgrid__field cgrid__field--grow">
-                <span className="cgrid__label">Tell me more about your business</span>
+                <span className="cgrid__label">Project Details <span aria-hidden="true">*</span><span className="sr-only"> (required)</span></span>
                 <textarea
                   name="message"
                   required
                   maxLength={MAX_MESSAGE}
-                  placeholder="What do you need help with? What are you working with today?"
+                  placeholder="Share your project requirements and how I can help."
                 />
               </label>
 
@@ -194,10 +277,11 @@ export default function ContactGrid() {
                 {status.kind === 'error' ? (
                   <span className="cgrid__status" role="alert">
                     <WarningCircle size={16} weight="fill" aria-hidden="true" />
-                    {status.note}
+                    <span>{status.note}</span>
+                    <a href={`mailto:${profile.email}`}>Email directly</a>
                   </span>
                 ) : (
-                  <span className="cgrid__hint">Short reassurance line, e.g. your reply time.</span>
+                  <span className="cgrid__hint">Please share only details relevant to your inquiry; avoid sensitive personal information.</span>
                 )}
               </div>
             </form>

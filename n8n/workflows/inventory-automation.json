@@ -1,0 +1,22 @@
+{
+  "name": "smartlogix-inventory-automation",
+  "active": false,
+  "meta": {
+    "smartlogix": {
+      "prepared": true,
+      "connected": false,
+      "stage": 1,
+      "approvalsRequired": true,
+      "integrations": ["supabase", "n8n"]
+    }
+  },
+  "notes": "Prepared architecture only. Monitors stock changes, calculates availability/reorder quantities, raises low-stock alerts, and generates PO drafts pending human approval.",
+  "nodes": [
+    { "name": "Stock Change Trigger", "type": "schedule/db-event", "notes": "Poll or receive stock movement events." },
+    { "name": "Calculate Inventory", "type": "supabase/rpc", "notes": "Transactional calculation of on_hand/reserved/available." },
+    { "name": "Low Stock Alert", "type": "supabase", "notes": "Create deduplicated alerts." },
+    { "name": "Create PO Draft", "type": "supabase", "notes": "Draft only; status pending_approval." },
+    { "name": "Log Run", "type": "http", "notes": "POST signed result to /api/smartlogix/n8n/callback." }
+  ],
+  "connections": {}
+}

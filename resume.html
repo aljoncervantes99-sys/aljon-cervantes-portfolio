@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aljon Cervantes - Resume</title>
+  <style>
+    @page {
+      size: Letter;
+      margin: 0;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.45;
+      color: #1a1a2e;
+      background: #fff;
+      padding: 0.75in 0.9in;
+    }
+    .header {
+      border-bottom: 3px solid #0B1E3F;
+      padding-bottom: 16px;
+      margin-bottom: 22px;
+    }
+    .name {
+      font-size: 22pt;
+      font-weight: 800;
+      color: #0B1E3F;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+    .role {
+      font-size: 10pt;
+      font-weight: 600;
+      color: #0B1E3F;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .contact {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 9pt;
+      color: #4a4a5a;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 11pt;
+      font-weight: 800;
+      color: #0B1E3F;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-bottom: 2px solid #FF7A1A;
+      padding-bottom: 4px;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    .entry {
+      margin-bottom: 12px;
+    }
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 3px;
+    }
+    .entry-title {
+      font-weight: 700;
+      color: #0B1E3F;
+      font-size: 10pt;
+    }
+    .entry-meta {
+      font-size: 8.5pt;
+      color: #FF7A1A;
+      font-weight: 600;
+    }
+    .entry-desc {
+      font-size: 9pt;
+      color: #3a3a4a;
+      margin-top: 2px;
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px 12px;
+    }
+    .skill-item {
+      font-size: 9pt;
+      color: #3a3a4a;
+      padding: 4px 8px;
+      border: 1px solid #0B1E3F;
+      border-radius: 4px;
+      background: #f4f4ed;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      margin-bottom: 5px;
+      position: relative;
+      padding-left: 14px;
+    }
+    li:before {
+      content: "\u2022";
+      color: #FF7A1A;
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+      font-size: 8pt;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media print {
+      body { padding: 0.5in 0.7in; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="name">Aljon Cervantes</div>
+    <div class="role">Ecommerce &amp; Shopify Specialist &bull; Technical Virtual Assistant &bull; Web Developer &bull; Digital Operations Specialist</div>
+    <div class="contact">
+      <span class="contact-item">Philippines</span>
+      <span class="contact-item">aljoncervantes99@gmail.com</span>
+      <span class="contact-item">LinkedIn</span>
+      <span class="contact-item">Upwork</span>
+    </div>
+  </header>
+
+  <section class="section">
+    <h2 class="section-title">Professional Summary</h2>
+    <p style="font-size: 9.5pt; color: #3a3a4a; text-align: justify;">
+      Operations and Tech Virtual Assistant specializing in ecommerce operations, website development,
+      CRM management, and business process automation. Combines hands-on operations experience with
+      technology and automation to help businesses stay organized, improve workflows, and create better
+      customer experiences. Focused on practical solutions that save time, reduce repetitive tasks, and
+      make day-to-day business operations more efficient.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Core Competencies</h2>
+    <div class="skills-grid">
+      <div class="skill-item">Ecommerce Operations</div>
+      <div class="skill-item">Shopify Store Management</div>
+      <div class="skill-item">Order Coordination</div>
+      <div class="skill-item">Inventory Monitoring</div>
+      <div class="skill-item">Supplier Communication</div>
+      <div class="skill-item">Shipment Tracking</div>
+      <div class="skill-item">Web Development</div>
+      <div class="skill-item">React &amp; JavaScript</div>
+      <div class="skill-item">HTML &amp; CSS</div>
+      <div class="skill-item">GitHub &amp; Vercel</div>
+      <div class="skill-item">CRM Management</div>
+      <div class="skill-item">Salesforce &amp; GoHighLevel</div>
+      <div class="skill-item">Business Process Automation</div>
+      <div class="skill-item">AI-Assisted Workflows</div>
+      <div class="skill-item">Operational Reporting</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Professional Experience</h2>
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Operations &amp; Tech Virtual Assistant</span>
+        <span class="entry-meta">Freelance &bull; Philippines</span>
+      </div>
+      <div class="entry-desc">
+        Provides virtual assistance services focused on ecommerce operations, web development,
+        CRM management, and business process automation for clients across ecommerce and digital
+        operations domains.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Tools &amp; Technologies</h2>
+    <div class="skills-grid">
+      <div class="skill-item">Shopify</div>
+      <div class="skill-item">GoHighLevel</div>
+      <div class="skill-item">Salesforce</div>
+      <div class="skill-item">React</div>
+      <div class="skill-item">HTML5</div>
+      <div class="skill-item">CSS3</div>
+      <div class="skill-item">JavaScript</div>
+      <div class="skill-item">GitHub</div>
+      <div class="skill-item">Vercel</div>
+      <div class="skill-item">n8n</div>
+      <div class="skill-item">OpenAI</div>
+      <div class="skill-item">Canva</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Areas of Professional Development</h2>
+    <div class="two-col">
+      <div>
+        <h3 style="font-size: 9.5pt; color: #0B1E3F; margin-bottom: 4px;">CRM &amp; Business Systems</h3>
+        <p style="font-size: 8.5pt; color: #3a3a4a; margin: 0;">Salesforce, GoHighLevel, and business process workflows.</p>
+      </div>
+      <div>
+        <h3 style="font-size: 9.5pt; color: #0B1E3F; margin-bottom: 4px;">Web Development</h3>
+        <p style="font-size: 8.5pt; color: #3a3a4a; margin: 0;">React, HTML, CSS, JavaScript, GitHub, and Vercel.</p>
+      </div>
+      <div>
+        <h3 style="font-size: 9.5pt; color: #0B1E3F; margin-bottom: 4px;">AI &amp; Automation</h3>
+        <p style="font-size: 8.5pt; color: #3a3a4a; margin: 0;">Exploring AI-assisted workflows, automation concepts, and business process improvement.</p>
+      </div>
+      <div>
+        <h3 style="font-size: 9.5pt; color: #0B1E3F; margin-bottom: 4px;">Ecommerce &amp; Operations</h3>
+        <p style="font-size: 8.5pt; color: #3a3a4a; margin: 0;">Shopify operations, inventory coordination, order management, and operational support.</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

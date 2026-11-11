@@ -62,37 +62,55 @@ export const mobileApps: MobileApp[] = [
 
 export const webApps: AppProject[] = [
   {
-    name: 'Web App One',
-    tagline: 'PLACEHOLDER - one-line tagline.',
-    description: DESC,
-    accentColor: '#0EA5E9',
-    stats: STATS,
-    badge: 'Badge',
+    name: 'Pearl White',
+    tagline: 'Premium Airbnb website and booking experience.',
+    description:
+      'A premium hospitality website designed to showcase the property, streamline booking inquiries, and create a polished guest experience.',
+    accentColor: '#6B8E78',
+    stats: [
+      { value: 'Website', label: 'Hospitality' },
+      { value: 'Booking', label: 'Experience' },
+      { value: 'Automation', label: 'Workflow' },
+    ],
+    badge: 'Airbnb Website',
   },
   {
-    name: 'Web App Two',
-    tagline: 'PLACEHOLDER - one-line tagline.',
-    description: DESC,
-    accentColor: '#EF4444',
-    stats: STATS,
-    badge: 'Badge',
+    name: 'Craftee Staff',
+    tagline: 'Virtual staffing website for growing ecommerce brands.',
+    description:
+      'A professional website concept for a virtual staffing business focused on ecommerce, apparel, customer support, and operational assistance.',
+    accentColor: '#8B6F5A',
+    stats: [
+      { value: 'Ecommerce', label: 'Support' },
+      { value: 'Virtual', label: 'Staffing' },
+      { value: 'Operations', label: 'Support' },
+    ],
+    badge: 'Business Website',
   },
   {
-    name: 'Web App Three',
-    tagline: 'PLACEHOLDER - one-line tagline.',
-    description: DESC,
-    imageSrc: '/placeholders/project-3.jpg',
-    accentColor: '#0891B2',
-    stats: STATS,
-    badge: 'Badge',
+    name: 'GoHighLevel Automation',
+    tagline: 'CRM, booking, notifications, and follow-up automation.',
+    description:
+      'An automated workflow connecting lead capture, CRM pipelines, booking forms, notifications, and customer follow-ups to reduce repetitive manual work.',
+    accentColor: '#5B6FB5',
+    stats: [
+      { value: 'CRM', label: 'Automation' },
+      { value: 'Booking', label: 'Workflow' },
+      { value: 'Follow-up', label: 'Automation' },
+    ],
+    badge: 'AI Automation',
   },
   {
-    name: 'Web App Four',
-    tagline: 'PLACEHOLDER - one-line tagline.',
-    description: DESC,
-    imageSrc: '/placeholders/project-4.jpg',
-    accentColor: '#F59E0B',
-    stats: STATS,
-    badge: 'Badge',
+    name: 'Shopify Ecommerce Operations',
+    tagline: 'Ecommerce management built around efficient operations.',
+    description:
+      'Ecommerce support covering product listings, inventory updates, order management, customer support, fulfillment coordination, and store administration.',
+    accentColor: '#6E9F72',
+    stats: [
+      { value: 'Shopify', label: 'Management' },
+      { value: 'Orders', label: 'Operations' },
+      { value: 'Support', label: 'Customers' },
+    ],
+    badge: 'Ecommerce',
   },
 ]

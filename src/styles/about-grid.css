@@ -1,21 +1,37 @@
 /* ============================================
-   ABOUT - the fixed viewport
-   Head, then one glass sheet split in two: who I am on the left, the desk
-   illustration on the right. Sized to the panel, so nothing here scrolls.
+   ABOUT - the responsive profile layout
+   The header leads into a two-column profile sheet, which stacks on phones.
+   The section keeps its natural height so all content remains reachable.
    ============================================ */
 
-.agrid__glass { min-height: 0; }
+.agrid {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: 100%;
+  grid-template-rows: auto auto;
+  align-content: start;
+  gap: clamp(20px, 3vh, 36px);
+}
 
-@media (min-width: 1100px) {
+.agrid__head { gap: clamp(6px, 0.75vw, 10px); }
+.agrid__head .pgrid__title { line-height: 1.08; }
+.agrid__head .pgrid__lede { max-width: 70ch; }
+
+.agrid__glass {
+  min-height: 0;
+  min-width: 0;
+  height: auto;
+}
+
+@media (min-width: 721px) {
   .agrid__glass {
-    height: 100%;
     display: grid;
-    grid-template-columns: minmax(0, 1.28fr) minmax(280px, 1fr);
-    /* Definite row, not the implicit auto one: the illustration is a big
-       raster and an auto row would let its intrinsic height set the sheet. */
-    grid-template-rows: minmax(0, 1fr);
-    gap: clamp(16px, 2vw, 40px);
-    align-items: stretch;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    grid-template-rows: auto;
+    align-items: center;
+    gap: clamp(18px, 2.4vw, 36px);
   }
 }
 
@@ -23,11 +39,11 @@
 .agrid__copy {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: clamp(10px, 1.5vh, 20px);
-  min-height: 0;
+  justify-content: flex-start;
+  gap: clamp(14px, 1.8vh, 22px);
+  min-height: min-content;
   min-width: 0;
-  padding: clamp(4px, 1vh, 16px) 0 clamp(4px, 1vh, 16px) clamp(4px, 0.8vw, 16px);
+  padding: clamp(4px, 1vh, 12px) 0 clamp(4px, 1vh, 12px) clamp(4px, 0.8vw, 16px);
 }
 
 /* The statement. This is the only display-scale type inside the sheet, so it
@@ -234,39 +250,70 @@
     0 2px 6px -3px rgba(0, 0, 0, 0.6);
 }
 
-/* ---------- Right: the illustration ----------
-   Bottom-aligned so the art sits on the floor of the sheet rather than floating in
-   the middle of it, and pulled into the sheet's corner by the glass padding
-   so the art gains that much size instead of leaving a margin of empty
-   gradient. The art has a transparent background and already carries the
-   site's navy and blue, so it needs no plate behind it. */
+/* ---------- Profile portrait ---------- */
 .agrid__portrait {
   position: relative;
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: center;
   min-height: 0;
   min-width: 0;
-  margin: 0 calc(-1 * clamp(14px, 1.4vw, 24px)) calc(-1 * clamp(14px, 2vh, 24px)) 0;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 3 / 4;
+  justify-self: center;
+  overflow: hidden;
+  border-radius: clamp(18px, 2vw, 28px);
+  box-shadow: var(--shadow-soft);
 }
 .agrid__portrait img {
   display: block;
   width: 100%;
   height: 100%;
   max-width: 100%;
-  object-fit: contain;
-  object-position: bottom right;
+  object-fit: cover;
+  object-position: center;
+  border-radius: inherit;
 }
 
 /* ---------- Below the shell ---------- */
 @media (max-width: 1099px) {
-  .agrid__glass { display: flex; flex-direction: column; gap: 20px; }
+  .agrid {
+    display: flex;
+    flex-direction: column;
+  }
   .agrid__copy { padding-left: 0; }
-  .agrid__lead { max-width: none; }
-  /* The corner pull is a two-column move; stacked, it just runs the art off
-     the right edge of the sheet. */
-  .agrid__portrait { order: -1; height: min(38vh, 300px); margin: 0; justify-content: center; }
-  .agrid__portrait img { object-position: bottom center; }
+}
+
+@media (max-width: 720px) {
+  .agrid__glass {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(18px, 4vw, 26px);
+  }
+  .agrid__portrait {
+    order: -1;
+    width: min(100%, 360px);
+    max-width: 100%;
+    flex: 0 0 auto;
+  }
+  .agrid__lead { max-width: 36ch; }
+}
+
+@media (max-width: 1099px) {
+  .agrid__copy { gap: clamp(16px, 2.4vw, 24px); }
+}
+
+@media (min-width: 721px) and (max-width: 1099px) {
+  .agrid__glass {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(18px, 3vw, 32px);
+  }
+  .agrid__portrait { max-width: 360px; }
+}
+
+@media (max-width: 560px) {
+  .agrid__portrait { width: min(100%, 320px); }
 }
 @media (max-width: 720px) {
   .agrid__bar { grid-template-columns: minmax(0, 1fr); }
@@ -286,4 +333,143 @@
 /* Phone type floor. */
 @media (max-width: 639px) {
   .agrid__cell-meta { font-size: 11.5px; }
+}
+
+/* ============================================
+   PROFESSIONAL DEVELOPMENT
+   Replaces the Credentials bar on the About view.
+   Compact skill-area cards, 2x2 on desktop,
+   stacked on mobile.
+   ============================================ */
+
+.agrid__dev {
+  margin-top: clamp(4px, 0.8vh, 10px);
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow:
+    inset 0 0 0 1px var(--line-strong),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 14px 34px -26px rgba(6, 12, 26, 0.45);
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.agrid__dev-eyebrow {
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--orange-ink);
+  margin: 0;
+  padding: clamp(14px, 1.6vw, 20px) clamp(16px, 1.6vw, 24px) 0;
+}
+
+.agrid__dev-section-title {
+  font-size: clamp(16px, min(1.3vw, 2.4vh), 22px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--navy);
+  margin: 0;
+  padding: 0 clamp(16px, 1.6vw, 24px) clamp(12px, 1.4vh, 16px);
+}
+
+.agrid__dev-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+@media (min-width: 721px) {
+  .agrid__dev-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.agrid__dev-item {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1vw, 14px);
+  padding: clamp(12px, 1.6vh, 18px) clamp(16px, 1.6vw, 22px);
+  min-height: 0;
+  border-bottom: 1px solid var(--line);
+  transition: background 200ms var(--ease-out), border-color 200ms var(--ease-out);
+}
+
+.agrid__dev-item:last-child { border-bottom: none; }
+
+.agrid__dev-item:hover {
+  background: var(--tint);
+  border-color: var(--line-strong);
+}
+
+.agrid__dev-index {
+  font-size: clamp(10px, 0.65vw, 12px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+  color: var(--orange-ink);
+  flex: 0 0 auto;
+}
+
+.agrid__dev-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: clamp(32px, 2.4vw, 40px);
+  height: clamp(32px, 2.4vw, 40px);
+  border-radius: 10px;
+  color: var(--orange-ink);
+  background: rgba(255, 122, 26, 0.10);
+  box-shadow: inset 0 0 0 1px rgba(255, 122, 26, 0.22);
+}
+
+.agrid__dev-item:hover .agrid__dev-mark {
+  background: var(--orange);
+  color: #fff;
+}
+
+.agrid__dev-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.agrid__dev-item-title {
+  font-size: clamp(13px, min(1vw, 1.8vh), 16px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--navy);
+  margin: 0;
+}
+
+.agrid__dev-desc {
+  font-size: clamp(11px, min(0.8vw, 1.5vh), 14px);
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
+[data-theme='dark'] .agrid__dev-item:hover {
+  background: #0F172A;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agrid__dev-item {
+    transition: none;
+  }
+  .agrid__dev-item:hover {
+    background: none;
+    border-color: var(--line);
+  }
+  .agrid__dev-item:hover .agrid__dev-mark {
+    background: rgba(255, 122, 26, 0.10);
+    color: var(--orange-ink);
+  }
 }

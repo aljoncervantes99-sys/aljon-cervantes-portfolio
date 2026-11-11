@@ -32,8 +32,8 @@
     display: block;
     width: clamp(132px, 21vh, 190px);
     aspect-ratio: 1;
-    /* The full cutout figure, no crop and no disc: it sits straight on the
-       page the way About seats it, with only a soft orange glow behind. */
+    border-radius: 50%;
+    box-shadow: 0 8px 22px rgba(6, 12, 26, 0.24);
   }
   .rail__avatar::before {
     content: '';
@@ -49,14 +49,10 @@
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    object-position: center bottom;
-    filter: drop-shadow(0 14px 22px rgba(6, 12, 26, 0.35));
-    /* The cutout ends in a flat line across the tee. One ellipse anchored
-       high dissolves the bottom edge and both shoulders into the page while
-       the head stays fully opaque - the same fade About uses. */
-    -webkit-mask-image: radial-gradient(ellipse 80% 86% at 50% 24%, #000 50%, transparent 100%);
-    mask-image: radial-gradient(ellipse 80% 86% at 50% 24%, #000 50%, transparent 100%);
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
   }
 
   .rail__name {
@@ -65,8 +61,8 @@
     gap: 7px;
     margin-top: 20px;
     font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-weight: 600;
+    letter-spacing: -0.035em;
     line-height: 1.2;
     color: var(--navy);
   }
@@ -130,6 +126,10 @@
     border-radius: var(--radius-circle);
     background: var(--white);
     color: var(--navy);
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
     box-shadow:
       inset 0 0 0 1px var(--line),
       0 10px 24px -18px rgba(6, 12, 26, 0.55);
@@ -144,6 +144,13 @@
       inset 0 0 0 1px var(--line-strong),
       0 14px 28px -18px rgba(6, 12, 26, 0.6);
   }
+  .rail__social:focus-visible {
+    outline: 2px solid var(--orange);
+    outline-offset: 3px;
+  }
+  .rail__social:disabled {
+    cursor: not-allowed;
+  }
   .rail__social-icon {
     display: block;
     width: 20px;
@@ -151,6 +158,10 @@
     background: currentColor;
     -webkit-mask: var(--icon-url) center / contain no-repeat;
             mask: var(--icon-url) center / contain no-repeat;
+  }
+  .rail__social-glyph {
+    display: block;
+    flex: 0 0 20px;
   }
 
   .rail__nav {
@@ -169,6 +180,7 @@
     border-radius: 14px;
     font-size: 17px;
     font-weight: 500;
+    letter-spacing: -0.01em;
     color: var(--muted);
     transition: color var(--dur-fast) var(--ease-out),
                 background var(--dur-fast) var(--ease-out),
@@ -243,7 +255,7 @@
     color: var(--navy);
     font-weight: 600;
     background: var(--white);
-    box-shadow: inset 0 0 0 1px var(--line);
+    box-shadow: inset 3px 0 0 var(--orange), inset 0 0 0 1px var(--line);
   }
   .rail__link.active svg { color: var(--orange); opacity: 1; }
 

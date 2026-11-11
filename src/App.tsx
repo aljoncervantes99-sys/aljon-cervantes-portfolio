@@ -6,6 +6,7 @@ import Rail from '@/components/Rail'
 import IntroOverlay from '@/components/IntroOverlay'
 import CursorRing from '@/components/CursorRing'
 import AccessMenu from '@/components/AccessMenu'
+import LaylaChat from '@/components/LaylaChat'
 import { motionReduced } from '@/lib/a11y'
 import { useLenis, SCROLLER_ID } from '@/hooks/useLenis'
 import { useIsPhone } from '@/hooks/useMediaQuery'
@@ -23,16 +24,14 @@ const HeroCanvas = lazy(() => import('@/components/HeroCanvasV2'))
  * shader, the intro, the profile rail and the one scrolling panel. Each route
  * renders its view into that panel through the Outlet.
  *
- * Home is the route that shaped the layout: it is sized to the panel box and
- * must not scroll, which is what `data-fixed` switches off. Projects,
- * Testimonials, About and Contact are built to the same budget and join it.
+ * Home is sized to the panel box and does not scroll. All other views keep
+ * their natural height and scroll inside the panel.
  */
 export default function App() {
   useLenis()
 
   const { pathname } = useLocation()
-  const FIXED_ROUTES = ['/', '/projects', '/testimonials', '/about', '/contact']
-  const isFixed = FIXED_ROUTES.includes(pathname)
+  const isFixed = pathname === '/'
   // Below the shell breakpoint the rail is gone: a bottom tab bar navigates,
   // the QuickMenu (theme + accessibility) floats top-right on every page but
   // Home (whose profile header carries it), and the visits widget folds into
@@ -108,7 +107,7 @@ export default function App() {
         <main
           ref={panelRef}
           id={SCROLLER_ID}
-          className="shell__panel"
+          className={`shell__panel${isFixed ? ' shell__panel--home' : ''}`}
           data-fixed={isFixed ? 'true' : 'false'}
         >
           <Suspense fallback={null}>
@@ -118,6 +117,7 @@ export default function App() {
       </div>
       {phone && <TabBar />}
       <AccessMenu />
+      <LaylaChat />
     </>
   )
 }

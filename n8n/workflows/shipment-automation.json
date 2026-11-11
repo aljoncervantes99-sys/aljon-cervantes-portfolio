@@ -1,0 +1,22 @@
+{
+  "name": "smartlogix-shipment-automation",
+  "active": false,
+  "meta": {
+    "smartlogix": {
+      "prepared": true,
+      "connected": false,
+      "stage": 1,
+      "approvalsRequired": false,
+      "integrations": ["supabase", "n8n", "carrier_tracking"]
+    }
+  },
+  "notes": "Prepared architecture only. Saves tracking references and processes carrier updates only when a supported integration is configured; updates statuses, detects delays, triggers exceptions.",
+  "nodes": [
+    { "name": "Tracking Update Trigger", "type": "webhook/schedule", "notes": "Disabled unless carrier integration configured." },
+    { "name": "Validate Signed Event", "type": "http/function", "notes": "Server-side signature verification and idempotency." },
+    { "name": "Update Shipment", "type": "supabase", "notes": "Persist shipment events and delivery status." },
+    { "name": "Delay/Exception Alert", "type": "supabase/notify", "notes": "Create alerts/notifications on delays or exceptions." },
+    { "name": "Log Run", "type": "http", "notes": "POST signed result to /api/smartlogix/n8n/callback." }
+  ],
+  "connections": {}
+}

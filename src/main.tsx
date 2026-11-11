@@ -9,6 +9,8 @@ import { restorePrefs } from '@/lib/a11y'
 
 // Every route but Home is its own chunk: the first visit only pays for Home.
 const ProjectsView = lazy(() => import('@/views/ProjectsView'))
+const EcommerceDashboard = lazy(() => import('@/components/EcommerceDashboard'))
+const BusinessImpactPage = lazy(() => import('@/components/BusinessImpactPage'))
 const ServicesView = lazy(() => import('@/views/ServicesView'))
 const ShowcaseView = lazy(() => import('@/views/ShowcaseView'))
 const TestimonialsGrid = lazy(() => import('@/components/TestimonialsGrid'))
@@ -31,6 +33,9 @@ import './styles/rail.css'
 import './styles/home.css'
 import './styles/bento.css'
 import './styles/projects-grid.css'
+import './styles/ecommerce-dashboard.css'
+import './styles/business-impact.css'
+import './styles/impact.css'
 import './styles/services-grid.css'
 import './styles/showcase.css'
 import './styles/testimonials-grid.css'
@@ -65,6 +70,8 @@ createRoot(container).render(
         <Route element={<App />}>
           <Route path="/" element={<Home />} />
           <Route path="/projects" element={<ProjectsView />} />
+          <Route path="/projects/ecommerce-dashboard" element={<EcommerceDashboard />} />
+          <Route path="/business-impact" element={<BusinessImpactPage />} />
           <Route path="/services" element={<ServicesView />} />
           <Route path="/showcase" element={<ShowcaseView />} />
           <Route path="/testimonials" element={<TestimonialsGrid />} />

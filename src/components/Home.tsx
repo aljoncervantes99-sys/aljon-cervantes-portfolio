@@ -1,27 +1,23 @@
 import { Link } from 'react-router-dom'
 import { ArrowUpRight } from '@/components/slab'
 import { profile } from '@/data/profile'
-import ToolsMarquee from './ToolsMarquee'
+import ToolsSection from './ToolsSection'
 import HomeBento from './HomeBento'
-import { HomeProfile, HomeStats, HomeExplore } from './HomeMobile'
+import { HomeProfile, HomeStats } from './HomeMobile'
 import { useScrollReveal } from '@/hooks/useScrollReveal'
 import { useIsPhone } from '@/hooks/useMediaQuery'
 
 /**
- * Home. One viewport, three bands, no scroll:
+ * Home. Three bands in a scrollable overview:
  *
  *   head       the display line the intro writes, then the lede
- *   tools      "Tools I work with" beside the marquee, on its own plate
- *   showcase   the bento - one card per view, see HomeBento - on its own
+ *   tools      daily drivers and the tools marquee, on its own plate
+ *   showcase   the six-card bento, with its previews and service index
  *
- * The grid is `auto auto 1fr` so the showcase absorbs the slack instead of
- * pushing the panel into a scrollbar. Every other view scrolls; this one is
- * laid out to the box.
+ * The home panel scrolls when the full-size cards extend past the viewport.
  *
- * On a phone the page becomes an app screen: a profile header where the rail
- * used to be, the proof stats under the lede, and the bento replaced by a
- * snap row of tiles (HomeMobile). The CTA leaves the head - the tab bar's
- * Contact action carries it on every screen.
+ * On a phone the profile header and proof stats remain, while the same bento
+ * reflows into a two-column tablet grid or a one-column phone stack.
  *
  * `.home__title` is also the intro's landing target: IntroOverlay measures it
  * and flies its copy into this exact rect, so the line the visitor watched
@@ -46,7 +42,7 @@ export default function Home() {
 
           {!phone && (
             <Link className="home__cta" to="/contact">
-              Get in touch
+              Let's Work Together
               <ArrowUpRight size={16} weight="bold" aria-hidden="true" />
             </Link>
           )}
@@ -62,22 +58,23 @@ export default function Home() {
       <div className="home__glass home__glass--tools">
         <div className="home__tools">
           <div className="home__tools-head">
-            <span className="home__tools-eyebrow">Daily drivers</span>
+            <span className="home__tools-eyebrow">DAILY DRIVERS</span>
             <h2 className="home__tools-label">Tools I work with</h2>
           </div>
-          <ToolsMarquee />
+          <ToolsSection />
         </div>
       </div>
 
-      {phone ? (
-        <HomeExplore />
-      ) : (
-        <div className="home__glass home__glass--showcase">
-          <div className="home__showcase">
-            <HomeBento />
-          </div>
+      {phone && (
+        <div className="hsec">
+          <h2 className="hsec__title">Explore</h2>
         </div>
       )}
+      <div className="home__glass home__glass--showcase">
+        <div className="home__showcase">
+          <HomeBento />
+        </div>
+      </div>
     </section>
   )
 }
